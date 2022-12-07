@@ -1,4 +1,4 @@
-# Metagenomic tools Basic installation&usage good
+# Metagenomic tools Basic installation&usage 
 
 ## Reads Download/QC/Trimming
 
