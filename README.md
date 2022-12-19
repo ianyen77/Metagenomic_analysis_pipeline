@@ -78,6 +78,14 @@ kraken2-build --download-taxonomy --threads{你要使用之線程數} --db $DBNA
 ```
 **Usage**   
 
+### Metaphlan
+short reads taxanomic assigment
+https://github.com/biobakery/MetaPhlAn/wiki/MetaPhlAn-4#installation
+**Install** 
+Often have dependency problems,make sure you have a 'clean env' before install
+https://github.com/biobakery/MetaPhlAn/wiki/MetaPhlAn-4#installation
+**Usage**  
+
 ## ARG Profile   
 ### ARGS-OAP   
 short reads ARG mapping to SARG2.2 DB  
