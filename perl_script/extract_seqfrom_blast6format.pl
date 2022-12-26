@@ -18,15 +18,15 @@ $script=$opt_b."diamond_blasted_seqlist_extract.pl";
 mkdir "$opt_o";
 
 for ($x=0; $x<@ARGV; $x++){
-	if ($ARGV[$x] =~ /(\S+\/)(\S+)(SARG_Blast_ORF.dmnd)/){
+	if ($ARGV[$x] =~ /(\S+\/)(\S+)(SARG.dmnd)/){
 	$filename=$2;
 	}
 	$listopt=$opt_o.$filename."_ARC_list.txt";
 	system("perl -w $script -f $ARGV[$x] > $listopt");
 	
 	#must notice name of contig file
-	$contig=$opt_i.$filename."final.contigs.fa";
-	$extractseq=$opt_o.$filename."_ARC.fa";
+	$contig=$opt_i.$filename.".contig.fa";
+	$extractseq=$opt_o.$filename.".ARC.fa";
 	
 	system("seqkit grep -f $listopt $contig -o $extractseq");
 	}

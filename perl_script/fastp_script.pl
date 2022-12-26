@@ -22,8 +22,8 @@ for ($x=0; $x<@ARGV; $x++){
 	
 	$filename1=$opt_i.$filename."_1.fq";
 	$filename2=$opt_i.$filename."_2.fq";
-	$output1=$opt_o."clean_".$filename."_1.fq";
-	$output2=$opt_o."clean_".$filename."_2.fq";
+	$output1=$opt_o.$filename."_1.fq";
+	$output2=$opt_o.$filename."_2.fq";
 	$outputj=$opt_o.$filename.".json";
 	$outputh=$opt_o.$filename.".html";
 	system("fastp -i $filename1 -I $filename2 -o $output1 -O $output2 -w 16 -j $outputj -h $outputh");
