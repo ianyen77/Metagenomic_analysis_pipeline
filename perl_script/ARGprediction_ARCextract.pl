@@ -36,7 +36,7 @@ for ($x=0; $x<@ARGV; $x++){
 	$prodigalout=$ARCorffolder.$filename.".prodigalout";
 	$prodigalout_p=$ARCorffolder.$filename.".protein";
 	$prodigalout_nucl=$ARCorffolder.$filename.".nucl";
-	
+	#diamond blast的參數要在修正及跟老師討論
 	system("diamond blastx -d ~/DB/Diamond/DB/SARG2.2_DB.dmnd -q $orf --id 50 -p 16 -e 1e-5 -f 6 -k 1 --query-cover 50 -o $diamondout");
 	system("perl -w $script1 -f $diamondout > $ARClistopt");
 	system("seqkit grep -f $ARClistopt $contig -o $extractseq");
