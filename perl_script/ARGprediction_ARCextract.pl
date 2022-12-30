@@ -45,7 +45,7 @@ for ($x=0; $x<@ARGV; $x++){
 	system("diamond blastx -d ~/DB/Diamond/DB/SARG2.2_DB.dmnd -q $orf --id 50 -p 16 -e 1e-5 -f 6 -k 1 --query-cover 50 -o $diamondout");
 	system("perl -w $script1 -f $diamondout > $ARClistopt");
 	system("seqkit grep -f $ARClistopt $contig -o $extractseq");
-	system("prodigal -i $extractseq -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -c -p meta");
+	system("prodigal -i $extractseq -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -p meta");
 	system("diamond blastx -d ~/DB/Diamond/DB/SARG2.2_DB.dmnd -q $prodigalout_nucl  --id 50 -p 16 -e 1e-5 -f 6 -k 1 --query-cover 50 -o $ARCorfrediamondout");
 	system("diamond blastp -d ~/DB/Diamond/DB/nr.dmnd -q $prodigalout_p -p 18 -b 16 -e 1e-5 -f 100 -o $diamondoutnr");
 	}

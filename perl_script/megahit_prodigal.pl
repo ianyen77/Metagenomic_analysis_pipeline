@@ -36,6 +36,6 @@ for ($x=0; $x<@ARGV; $x++){
 	system("mv $megahitout/final.contigs.fa $megahitout/$megahitcontig");
 	system("mv $megahitout/$megahitcontig $mvdirectory");
 	system("rm -r $megahitout/");
-	system("prodigal -i $mvdirectory/$megahitcontig -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -c -p meta");
+	system("prodigal -i $mvdirectory/$megahitcontig -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -p meta");
 
 	}
