@@ -1,8 +1,8 @@
 use Getopt::Std;
 getopt("i");
-open FILE, $opt_i;
 $count1=0;
-while (<FILE>) {
+open FILE,$opt_i;
+while(<FILE>){
     if (/>/) {
         if (/(>)(\S+)(_)(\d*)(\s.*)/) {
             $contig = $2;
