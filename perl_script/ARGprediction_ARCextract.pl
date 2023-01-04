@@ -17,7 +17,7 @@ unless (@ARGV && $opt_b && $opt_o && $opt_i && $opt_a && $opt_c) {
     die();
     }
     
-$script1=$opt_b."diamond_blasted_seqlist_extract.pl";
+$script1=$opt_b."diamond_blasted_contiglist_extract.pl";
 mkdir $opt_o;
 mkdir $opt_a;
 $ARCorffolder=$opt_a."ARC_ORF/";
