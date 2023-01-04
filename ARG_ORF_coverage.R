@@ -1,4 +1,3 @@
-library("Hmisc")
 library("openxlsx")
 library("tidyverse")
 library("ggplot2")
