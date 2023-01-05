@@ -1,28 +1,20 @@
-library("Hmisc")
 library("openxlsx")
 library("tidyverse")
-library("ggplot2")
-dianomd_annotate_orf<-read.xlsx("~/R/Diamond_SARG_annotate.xlsx",rowNames=F,colNames=T,sheet=1)
-bowtie2_bbmap_mapped_coverage<-read.xlsx("~/R/ARG-ORF_coverage.xlsx",rowNames = F,colNames = T,sheet=1)
-colnames(dianomd_annotate_orf)[colnames(dianomd_annotate_orf) == 'qseqid'] <- '#ID'
-coverage_dianomd_list<-merge(dianomd_annotate_orf,bowtie2_bbmap_mapped_coverage,by="#ID",all = T)
-coverage_dianomd_reannotae<-coverage_dianomd_list%>%
-  separate(Categories_in_database,into=c("type","subtype"),sep="__")
-coverage_dianomd_reannotae<-coverage_dianomd_reannotae[,c(-5:-14)]
-coverage_dianomd_type_stastis<-coverage_dianomd_reannotae%>%
-  group_by(type)%>%
-  summarise(type_sum=sum(Avg_fold,na.rm = T))
-coverage_dianomd_subtype_stastis<-coverage_dianomd_reannotae%>%
-  group_by(type,subtype)%>%
-  summarise(subtype_sum=sum(Avg_fold,na.rm = T))
-write.xlsx(coverage_dianomd_type_stastis,"~/R/coverage_dianomd_stastic_type.xlsx",colNames=T,rowNames=F,sheet=1)
-write.xlsx(coverage_dianomd_subtype_stastis,"~/R/coverage_stastic_subtype.xlsx",colNames=T,rowNames=F,sheet=1)
-write.xlsx(coverage_dianomd_reannotae,"~/R/coverage_dianomd.xlsx",colNames=T,rowNames=F,sheet=1)
-coverage_dianomd_type_stastis$type[coverage_dianomd_type_stastis$type=="macrolide-lincosamide-streptogramin"]<-"MLS"
-coverage_dianomd_type_stastis%>%
-  ggplot()+
-  geom_bar(aes(x=reorder(type,-type_sum),y=type_sum,fill=type),stat="identity")+
-  geom_text(aes(x=type,y=type_sum,label=round(type_sum,1)),size=3,vjust=-0.3)+
-  labs(x = 'Type',
-       y = 'Coverage (×/GB)',
-       title = 'ARG Type Coverage')
+#把原先reblast的結果輸入
+dianomd_annotate_orf<-read.xlsx("C:/Users/USER/Desktop/SRR6986807ARC_classfication.xlsx",rowNames=F,colNames=T,sheet=1)
+bowtie2_bbmap_mapped_coverage<-read.table("C://Users/USER/Desktop/SRR6986807ARC.sam.map.txt",header=T,sep="\t")
+colnames(bowtie2_bbmap_mapped_coverage)[colnames(bowtie2_bbmap_mapped_coverage) == 'ID'] <- 'contig'
+coverage_dianomd_list<-merge(dianomd_annotate_orf,bowtie2_bbmap_mapped_coverage,by="contig",all = T)
+coverage_dianomd_list<-coverage_dianomd_list%>%
+  filter(!is.na(gene))
+#我們需要contig的length才能夠算coverage
+contig_length<-read.xlsx("C:/Users/USER/Desktop/contig_len.xlsx",rowNames = F,colNames = T,sheet=1)
+coverage_dianomd_list<-merge(coverage_dianomd_list,contig_length,all.x=T)
+readlength<-150
+gb<-5.6
+list<-coverage_dianomd_list%>%
+  mutate(contig_coverage=(Avg_fold*150/(len*5.6)))%>%
+  select(contig,qseqid,type,subtype,contig_taxon,percent,contig_coverage)
+
+
+
