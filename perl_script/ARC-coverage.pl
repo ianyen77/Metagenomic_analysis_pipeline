@@ -37,8 +37,35 @@ for ($x=0; $x<@ARGV; $x++){
 	system("~/metagenomic_pipeline/bbmap/bbmap/pileup.sh in=$samfile out=$sammapout");
 	system("rm $samfile");
 	system("perl-w $script -f $ARC > $contiglen");
-$reblastSARG="/home/tungs-lab/ARC/ARC_ORF/ARC_ORF_SARGreblast/".$filename."reblast_SARG.dmnd";
-$contig_SARG_Class=$opt_o.$filename."ARC_classfication.xlsx";
-$SARG_adjust_DB_xlsx="~/metagenomic_pipeline/ARG-OAP/Ublastx_stageone2.2/Ublastx_stageone/DB/SARG_Struturelist_adjust.xlsx";
+$ARC_class_xlsx="/home/tungs-lab/test_megan_out/".$filename."ARC_classfication.xlsx";
+
 #寫一個暫用的RScript
+#我們還需要寫一個可以調用檔案大小的perl function
+$rscript = "/home/tungs-lab/temp.R";
+open(R,">",$rscript);
+$trs = <<RS;
+library(openxlsx)
+library(tidyverse)
+#把處理過得megan.xlsx檔案讀取
+dianomd_annotate_orf<-read.xlsx("",rowNames=F,colNames=T,sheet=1)
+bowtie2_bbmap_mapped_coverage<-read.table("$sammapout",header=T,sep="\\t")
+colnames(bowtie2_bbmap_mapped_coverage)[colnames(bowtie2_bbmap_mapped_coverage) == 'ID'] <- 'contig'
+coverage_dianomd_list<-merge(dianomd_annotate_orf,bowtie2_bbmap_mapped_coverage,by="contig",all.x= T)
+coverage_dianomd_list<-coverage_dianomd_list%>%
+  filter(!is.na(gene))
+#我們需要contig的length才能夠算coverage
+contig_length<-read.table("$contiglen",header=T,sep="\\t")
+colnames(contig_length)<-c("contig","length")
+coverage_dianomd_list<-merge(coverage_dianomd_list,contig_length,all.x=T)
+readlength<-150
+gb<-
+list<-coverage_dianomd_list%>%
+  mutate(contig_coverage=(Avg_fold*150/(len*5.6)))%>%
+  select(contig,qseqid,type,subtype,contig_taxon,percent,contig_coverage)
+
+RS
+print R $trs;
+close R;
+system("Rscript $rscript");
+system("rm $rscript");
 	}
