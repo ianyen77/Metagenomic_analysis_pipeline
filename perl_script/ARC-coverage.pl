@@ -28,6 +28,8 @@ for ($x=0; $x<@ARGV; $x++){
 	$bowtie2_index=$bt2indexfolder.$filename."ARC.bt2.index";
 	$clean1=$opt_r.$filename."_1.fq";
 	$clean2=$opt_r.$filename."_2.fq";
+	$clean1_fa=$opt_r.$filename."_1.fa";
+	$clean2_fa=$opt_r.$filename."_2.fa";
 	$samfile=$opt_o.$filename."ARC_mapping.sam";
 	$sammapout=$opt_o.$filename."ARC.sam.map.txt";
 	$script=$opt_b."contig_length.pl";
@@ -37,10 +39,15 @@ for ($x=0; $x<@ARGV; $x++){
 	system("~/metagenomic_pipeline/bbmap/bbmap/pileup.sh in=$samfile out=$sammapout");
 	system("rm $samfile");
 	system("perl-w $script -f $ARC > $contiglen");
-$ARC_class_xlsx="/home/tungs-lab/test_megan_out/".$filename."ARC_classfication.xlsx";
-
+	
+#取得data set size
+$size1= -s $clean1_fa;
+$size2= -s $clean2_fa;
+$size=($size1+$size2)/2000000000;
+chomp $size;
 #寫一個暫用的RScript
-#我們還需要寫一個可以調用檔案大小的perl function
+#指定要用的檔案
+$ARC_class_xlsx="/home/tungs-lab/test_megan_out/".$filename."ARC_classfication.xlsx";
 $rscript = "/home/tungs-lab/temp.R";
 open(R,">",$rscript);
 $trs = <<RS;
@@ -57,10 +64,11 @@ coverage_dianomd_list<-coverage_dianomd_list%>%
 contig_length<-read.table("$contiglen",header=T,sep="\\t")
 colnames(contig_length)<-c("contig","length")
 coverage_dianomd_list<-merge(coverage_dianomd_list,contig_length,all.x=T)
+#readlength=illumina reads length
 readlength<-150
-gb<-
+#因為要除掉data set size,所以我們要用參數
 list<-coverage_dianomd_list%>%
-  mutate(contig_coverage=(Avg_fold*150/(len*5.6)))%>%
+  mutate(contig_coverage=(Avg_fold*150/(len*$size)))%>%
   select(contig,qseqid,type,subtype,contig_taxon,percent,contig_coverage)
 
 RS
