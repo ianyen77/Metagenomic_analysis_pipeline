@@ -60,7 +60,7 @@ contig_taxonomy<-MEGAN_orfcount%>%
   mutate(percent=count/contig_countorf)%>%
   filter(percent>0.5)%>%
   filter(V2!="Not assigned")
-colnames(contig_taxonomy)<-c("contig","contig_taxon","megancontig","contig_orf_num","percent")
+colnames(contig_taxonomy)<-c("contig","contig_taxon","megancontig","contig_orf_num","megan_vote_percent")
 #合併meganout跟原先的blastoutput
 ARC_blast<-separate(Diamond_SARG_hit_annoate,qseqid,sep="_",into=c("x1","x2","x3"),remove=F)
 ARC_blast<-unite(ARC_blast,"contig",x1,x2,sep="_")
