@@ -6,13 +6,14 @@
 #--------------------------------------------------
 #
 use Getopt::Std;
-getopt("biro");
+getopt("birom");
 
-unless (@ARGV && $opt_o && $opt_i && $opt_r && $opt_b) {
+unless (@ARGV && $opt_o && $opt_i && $opt_r && $opt_b && $opt_m) {
     print "-b bin folder of perl script\n";
     print "-i iutput ARC.fa(abs_path)\n";
     print "-r input clean reads folder(abs_path)\n";
     print "-o output coverage directory(abs_path)\n";
+    print "-m meganout directory(ARC.xlsx)(abs_path)\n";
     print "-ARGV are input ARC.fa file(abs_path)\n";
     die();
     }
@@ -40,36 +41,66 @@ for ($x=0; $x<@ARGV; $x++){
 	system("rm $samfile");
 	system("perl-w $script -f $ARC > $contiglen");
 	
-#取得data set size
+#因為bbmap寫出的檔案colnames輸出的問題,R沒辦法讀取到他的columnname,因此我們重新把colname寫過,在寫入一個檔案
+$adjustfolder=$opt_o."adjust_mapout/";
+chomp $adjustfolder;
+mkdir $adjustfolder;
+$adjust_samopt=$adjustfolder.$filename."adjustcol_ARC.sam.map.txt";
+open FILE,$sammapout;
+open (ADJUST,">",$adjust_samopt);
+while(<FILE>){
+ if(/#/){
+	chomp;
+	@column= split /\t/;
+	@column[0]="ID";
+	$name="@column[0]\t@column[1]\t@column[2]\t@column[3]\t@column[4]\t@column[5]\t@column[6]\t@column[7]\t@column[8]\t@column[9]\t@column[10]\n";
+	print ADJUST $name;
+	}
+else {
+chomp;
+print ADJUST "$_\n";
+}
+}
+close ADJUST;
+close FILE;
+
+#取得data set size(for coverage caculation)
 $size1= -s $clean1_fa;
 $size2= -s $clean2_fa;
 $size=($size1+$size2)/2000000000;
 chomp $size;
-#寫一個暫用的RScript
+
+
+#寫一個暫用的RScript來計算ARC coverage
 #指定要用的檔案
-$ARC_class_xlsx="/home/tungs-lab/test_megan_out/".$filename."ARC_classfication.xlsx";
+$ARC_class_xlsx=$opt_m.$filename."ARC_classfication.xlsx";
+$ARC_cov_listall=$opt_o.$filename."ARC_class_cov_all.xlsx";
+$ARC_cov_listsel=$opt_o.$filename."ARC_class_cov_select.xlsx";
 $rscript = "/home/tungs-lab/temp.R";
 open(R,">",$rscript);
 $trs = <<RS;
+#This is a R script for caculate contig coverage 
+#This script can be intgrated in perl script(Suggest)
 library(openxlsx)
 library(tidyverse)
-#把處理過得megan.xlsx檔案讀取
-dianomd_annotate_orf<-read.xlsx("",rowNames=F,colNames=T,sheet=1)
-bowtie2_bbmap_mapped_coverage<-read.table("$sammapout",header=T,sep="\\t")
+#把處理過的ARCmegan.xlsx檔案讀取
+dianomd_annotate_orf<-read.xlsx(xlsxFile="$ARC_class_xlsx",rowNames=F,colNames=T,sheet=1)
+bowtie2_bbmap_mapped_coverage<-read.table(file="$adjust_samopt",header=T,sep="\\t")
 colnames(bowtie2_bbmap_mapped_coverage)[colnames(bowtie2_bbmap_mapped_coverage) == 'ID'] <- 'contig'
-coverage_dianomd_list<-merge(dianomd_annotate_orf,bowtie2_bbmap_mapped_coverage,by="contig",all.x= T)
+colnames(bowtie2_bbmap_mapped_coverage)[colnames(bowtie2_bbmap_mapped_coverage) == 'Length'] <- 'Contig_length'
+coverage_dianomd_list<-merge(dianomd_annotate_orf,bowtie2_bbmap_mapped_coverage,by="contig",all.x=T)
 coverage_dianomd_list<-coverage_dianomd_list%>%
   filter(!is.na(gene))
-#我們需要contig的length才能夠算coverage
-contig_length<-read.table("$contiglen",header=T,sep="\\t")
-colnames(contig_length)<-c("contig","length")
-coverage_dianomd_list<-merge(coverage_dianomd_list,contig_length,all.x=T)
-#readlength=illumina reads length
-readlength<-150
-#因為要除掉data set size,所以我們要用參數
-list<-coverage_dianomd_list%>%
-  mutate(contig_coverage=(Avg_fold*150/(len*$size)))%>%
-  select(contig,qseqid,type,subtype,contig_taxon,percent,contig_coverage)
+#setting parameter for caculate coverage, 1.readlength=illumina reads length 2.size=datasetsize
+readslength<-150
+size<-$size
+#計算coverage
+ARC_list_all<-coverage_dianomd_list%>%
+  mutate(contig_coverage=(Avg_fold*readslength/(Contig_length*size)))
+ARC_list_select<-ARC_list_all%>%
+  select(contig,qseqid,type,subtype,contig_taxon,megan_vote_percent,contig_coverage)
+write.xlsx(ARC_list_all,file="$ARC_cov_listall")
+write.xlsx(ARC_list_select,file="$ARC_cov_listsel")
 
 RS
 print R $trs;
