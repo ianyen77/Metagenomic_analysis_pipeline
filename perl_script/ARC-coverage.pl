@@ -65,11 +65,32 @@ close ADJUST;
 close FILE;
 
 #取得data set size(for coverage caculation)
-$size1= -s $clean1_fa;
-$size2= -s $clean2_fa;
-$size=($size1+$size2)/2000000000;
-chomp $size;
+$size1=0;
+open SEQF,$clean1;
+while(<SEQF>){
+if (/>/){
+next();}
+else{
+chomp;
+$length1=length $_;
+$file1+=$length1;
+}
+}
+close SEQF;
+open SEQR,$clean2;
+$size2=0;
+while(<SEQR>){
+if (/>/){
+next();}
+else{
+chomp;
+$length2=length $_;
+$size2+=$length2;
+}
+}
 
+$size=($size1+$size2)/1000000000;
+chomp $size;
 
 #寫一個暫用的RScript來計算ARC coverage
 #指定要用的檔案
