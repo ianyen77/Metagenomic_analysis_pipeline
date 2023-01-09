@@ -25,6 +25,8 @@ $length=length $_;
 $file2+=$length;
 }
 }
+close SEQ;
+
 $datasetsize=$file1+$file2;
 
 print "$datasetsize\n";

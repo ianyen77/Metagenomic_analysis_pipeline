@@ -88,7 +88,7 @@ $length2=length $_;
 $size2+=$length2;
 }
 }
-
+close SEQR;
 $size=($size1+$size2)/1000000000;
 chomp $size;
 
