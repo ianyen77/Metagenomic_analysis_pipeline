@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #Author:2022/01/04
-#This is script for 1.Extract ARG-likes ORFs sequence 2.output bowtie2 mapping file 3. statistic bowtie2 output (pile up)
+#This is script for 1.mapping clean reads to ARC 2. statistic bowtie2 output (pile up) 3.利用r分析
 #Needs open in conda env,make sure your open conda before use
 #
 #--------------------------------------------------
@@ -33,13 +33,11 @@ for ($x=0; $x<@ARGV; $x++){
 	$clean2_fa=$opt_r.$filename."_2.fa";
 	$samfile=$opt_o.$filename."ARC_mapping.sam";
 	$sammapout=$opt_o.$filename."ARC.sam.map.txt";
-	$script=$opt_b."contig_length.pl";
 	$contiglen=$opt_o.$filename.".contiglen.txt";
 	system("bowtie2-build $ARC $bowtie2_index");
 	system("bowtie2 -x $bowtie2_index -1 $clean1 -2 $clean2 -S $samfile -p 16");
 	system("~/metagenomic_pipeline/bbmap/bbmap/pileup.sh in=$samfile out=$sammapout");
 	system("rm $samfile");
-	system("perl-w $script -f $ARC > $contiglen");
 	
 #因為bbmap寫出的檔案colnames輸出的問題,R沒辦法讀取到他的columnname,因此我們重新把colname寫過,在寫入一個檔案
 $adjustfolder=$opt_o."adjust_mapout/";
@@ -53,7 +51,7 @@ while(<FILE>){
 	chomp;
 	@column= split /\t/;
 	@column[0]="ID";
-	$name="@column[0]\t@column[1]\t@column[2]\t@column[3]\t@column[4]\t@column[5]\t@column[6]\t@column[7]\t@column[8]\t@column[9]\t@column[10]\n";
+	$name="$column[0]\t$column[1]\t$column[2]\t$column[3]\t$column[4]\t$column[5]\t$column[6]\t$column[7]\t$column[8]\t$column[9]\t$column[10]\n";
 	print ADJUST $name;
 	}
 else {
@@ -66,18 +64,18 @@ close FILE;
 
 #取得data set size(for coverage caculation)
 $size1=0;
-open SEQF,$clean1;
+open SEQF,$clean1_fa;
 while(<SEQF>){
 if (/>/){
 next();}
 else{
 chomp;
 $length1=length $_;
-$file1+=$length1;
+$size1+=$length1;
 }
 }
 close SEQF;
-open SEQR,$clean2;
+open SEQR,$clean2_fa;
 $size2=0;
 while(<SEQR>){
 if (/>/){
@@ -91,6 +89,7 @@ $size2+=$length2;
 close SEQR;
 $size=($size1+$size2)/1000000000;
 chomp $size;
+print "$filename dataset= $size GB\n";
 
 #寫一個暫用的RScript來計算ARC coverage
 #指定要用的檔案

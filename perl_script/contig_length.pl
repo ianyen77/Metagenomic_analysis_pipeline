@@ -1,9 +1,10 @@
 #!/usr/bin/perl -w
-#This is script for megahit out contig fa file 
+#This is script for "megahit out" contig fa file 
 use Getopt::Std;
 getopt("f");
-$count=0;
+chomp $opt_f;
 open FILE,$opt_f;
+
 while(<FILE>){
 chomp;
 if($_=~/>/){
