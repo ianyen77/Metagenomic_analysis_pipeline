@@ -33,16 +33,25 @@ metadata16s<-read.xlsx(xlsxFile = "C:/Users/USER/Desktop/lab/實驗/Metagenomic 
 SARG_blastx_filter<-separate(SARG_blastx_filter,qseqid,into=c("Name","seqnum"),sep = "_",remove = F)
 SARG_blastx_filter$seqnum<-NULL
 SARG_annoate_blastx<-merge(SARG_blastx_filter,metadata16s,by="Name",all.x = T)
-#這個數字是來自metadata online.txt的16s數量
-gene_name<-read.xlsx(xlsxFile = "C:/Users/USER/Desktop/clresistblast.xlsx",sheet=4,colNames = F)
-colnames(gene_name)<-c("gene","gene_name")
+#合併基因的名字
+gene_name<-read.xlsx(xlsxFile = "C:/Users/USER/Desktop/lab/實驗/Metagenomic in DWDS/DATA/newDATA/MGE/MGE namefile.xlsx",sheet=1,colNames = F)
+colnames(gene_name)<-c("gene","type","subtype")
+gene_name$gene<- paste(gene_name$gene,"1", sep="_")
 SARG_annoate_blastx<-merge(SARG_annoate_blastx,gene_name,by="gene",all.x=T)
+SARG_annoate_blastx$SampleID<-NULL
+write.xlsx(SARG_annoate_blastx,"C:/Users/USER/Desktop/MGE_blast_out.xlsx")
+SARG_annoate_blastx<-read.xlsx("C:/Users/USER/Desktop/MGE_blast_out.xlsx",sheet=1)
 #這個計算是將blast到的長度/reference AA的長度*16S數量，再加總
 SARG_annoate_blastx<-SARG_annoate_blastx%>%
   mutate("blastlength/referencelength"=length/(aalength*`#of16Sreads`))
 subtype_16snormalize<-SARG_annoate_blastx%>%
-  group_by(Name)%>%
-  summarise(subtype_sum=sum(`blastlength/referencelength`,na.rm = T))
+  group_by(Name,type,subtype)%>%
+  summarise(subtype_sum=sum(`blastlength/referencelength`,na.rm = T))%>%
+  unite("subtype",type,subtype,sep = "__" )%>%
+  spread(key = subtype,value = subtype_sum)
+subtype_16snormalize[is.na(subtype_16snormalize)]<-0
+write.xlsx(subtype_16snormalize,"C:/Users/USER/Desktop/MGEblastoutform.xlsx")
+
 #分析MGE跟ARG的相關性
 arg<-read.xlsx("C:/Users/USER/Desktop/lab/實驗/Metagenomic in DWDS/DATA/newDATA/ARG/ARGoap_out.xlsx",sheet=2,rowNames=T,colNames =T)
 arg<-as.data.frame(t(arg))
