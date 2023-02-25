@@ -106,7 +106,7 @@ varaible_group_mean<-MGE_ARG%>%
   summarise(type_mean=mean(subtype_sum),type_sd=sd(subtype_sum))
 varaible_group_mean$location<-factor(varaible_group_mean$location,levels=c("Raw","Finished","Upstream","Midstream","Downstream"))
 ggplot(varaible_group_mean)+geom_bar(aes(x=location, y=type_mean), stat="identity",fill="#8DD3C7")+geom_errorbar(aes(x=location,ymin=type_mean-type_sd, ymax=type_mean+type_sd), width=.2,position=position_dodge(.9))+
-  theme_bw()+ labs(x="Location",y="Total MGEs abundance normalization aganist 16S")+theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))+
+  theme_bw()+ labs(x="Location",y="Total MGEs abundance normalization against 16S")+theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))+
   geom_line(data=tibble(x=c(1,3),y=c(0.35,0.35)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=2,y=0.355),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+geom_line(data=tibble(x=c(3,5),y=c(0.34,0.34)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=4,y=0.345),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+
   geom_line(data=tibble(x=c(2,3),y=c(0.33,0.33)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=2.5,y=0.335),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+geom_line(data=tibble(x=c(3,4),y=c(0.32,0.32)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=3.5,y=0.325),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)
 RColorBrewer::display.brewer.all()
