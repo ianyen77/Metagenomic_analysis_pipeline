@@ -21,7 +21,7 @@ for ($x=0; $x<@ARGV; $x++){
 	}
 	$megahitcontig=$opt_i.$filename."final.contigs";
 	$quastreport=$opt_o.$filename."quastreprot";
-	system("./quast.py $megahitcontig -o $quastreport");
+	system("/home/tungs-lab/metagenomic_pipeline/Quast/quast-5.2.0/quast.py $megahitcontig -o $quastreport");
 	}
 	
 

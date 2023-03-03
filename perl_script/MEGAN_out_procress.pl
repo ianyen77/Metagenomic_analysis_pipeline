@@ -5,12 +5,12 @@
 use Getopt::Std;
 getopt("boif");
 
-unless (@ARGV && $opt_b && $opt_o && $opt_i) {
+unless (@ARGV && $opt_b && $opt_o && $opt_i && $opt_f) {
     print "-b bin Directory(abs_path ie ~/perlscript/)\n";
     print "-o output directory(abs_path)\n";
     print "-i intput MEGAN file directory(abs_path)\n";
     print "-f input ARC-ORF file directory(abs_path)\n";
-    print "-ARGV are input . file(abs_path)\n";
+    print "-ARGV are input diamond manual inspector.txt file(abs_path)\n";
     die();
 }
 
@@ -32,8 +32,8 @@ for ($x=0; $x<@ARGV; $x++){
 	system("perl -w $script1 -i $ARC_ORF > $listopt");
 	system("perl -w $script2 -i $meganopttxt > $meganopt");
 #下面這兩個變數在真的使用的時候要改成真的路徑
-$reblastSARG="/home/tungs-lab/ARC/ARC_ORF/ARC_ORF_SARGreblast/".$filename."reblast_SARG.dmnd";
-$contig_SARG_Class=$opt_o.$filename."ARC_classfication.xlsx";
+$reblastSARG="/home/tungs-lab/location_co_assembly/location_co_ARC/ARC_ORF/ARC_ORF_SARGreblast/".$filename."reblast_SARG.dmnd";
+$contig_SARG_Class=$opt_o.$filename."_ARC_classfication.xlsx";
 $SARG_adjust_DB_xlsx="~/metagenomic_pipeline/ARG-OAP/Ublastx_stageone2.2/Ublastx_stageone/DB/SARG_Struturelist_adjust.xlsx";
 #寫一個暫用的RScript
 $rscript = "/home/tungs-lab/temp.R";

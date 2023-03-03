@@ -3,7 +3,7 @@ getopt("i");
 
 open FILE,$opt_i;
 while(<FILE>){
-if (/(k141_.*)(_.*)/){
+if (/(k127_.*)(_.*)/){
     $seq=$1;
     print "$seq\t$name\n";}
 else{

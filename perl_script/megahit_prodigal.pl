@@ -32,10 +32,10 @@ for ($x=0; $x<@ARGV; $x++){
 	$prodigalout_p=$opt_p.$filename.".protein";
 	$prodigalout_nucl=$opt_p.$filename.".nucl";
 	
-	system("megahit -t 18 -m 0.95 -1 $file1 -2 $file2 --min-contig-len 500 -o $megahitout");
+	system("megahit -t 16 -m 0.95 -1 $file1 -2 $file2 --min-contig-len 500 -o $megahitout --presets meta-large");
 	system("mv $megahitout/final.contigs.fa $megahitout/$megahitcontig");
 	system("mv $megahitout/$megahitcontig $mvdirectory");
-	system("rm -r $megahitout/");
+	#system("rm -r $megahitout/");
 	system("prodigal -i $mvdirectory/$megahitcontig -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -p meta");
 
 	}
