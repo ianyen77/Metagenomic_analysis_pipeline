@@ -42,10 +42,10 @@ for ($x=0; $x<@ARGV; $x++){
 	$ARCorfrediamondout=$ARCorfrediamond.$filename."reblast_SARG.dmnd";
 	$diamondoutnr=$ARCorfnrblast.$filename.".nrblast.daa";
 	#diamond blastx的參數要在修正及跟老師討論
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $diamondout");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q $orf -p 16 --id 80 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $diamondout");
 	system("perl -w $script1 -f $diamondout > $ARClistopt");
 	system("seqkit grep -f $ARClistopt $contig -o $extractseq");
 	system("prodigal -i $extractseq -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -p meta");
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q $prodigalout_nucl -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $ARCorfrediamondout");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q $prodigalout_nucl -p 16 --id 80 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $ARCorfrediamondout");
 	system("diamond blastp -d /media/sf_sf/DB/Diamond/DB/nr.dmnd -q $prodigalout_p -p 16 -b 16 -e 1e-5 -f 100 -o $diamondoutnr");
 	}
