@@ -252,13 +252,13 @@ $ conda acitvate plasflow
 ```
 
 ### Metawrap Binning
-contigs binning
-Metawrap(https://github.com/bxlab/metaWRAP)
+contigs binning   
+Metawrap(https://github.com/bxlab/metaWRAP)   
    
 **Install** 
-首先必須先安裝mamba(注意，使用conda安裝會使他們衝突，所以請到mamba官網上使用mambaforge安裝)
-https://github.com/conda-forge/miniforge#mambaforge
-安裝好mamba後
+首先必須先安裝mamba(注意，使用conda安裝會使他們衝突，所以請到mamba官網上使用mambaforge安裝)   
+https://github.com/conda-forge/miniforge#mambaforge   
+安裝好mamba後，開始安裝metawrap   
 ```
 # install metawrap:
 $mamba create -y --name metawrap-env --channel ursky metawrap-mg=1.3.2
