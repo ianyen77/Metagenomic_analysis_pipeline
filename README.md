@@ -250,3 +250,42 @@ $ conda acitvate plasflow
 (plasflow)$ PlasFlow.py --input {contig.fa} --output {outputfile.tsv} --threshold {0-1,default 0.7}
 (plasflow)$ conda deactivate
 ```
+
+### Metawrap Binning
+contigs binning
+Metawrap(https://github.com/bxlab/metaWRAP)
+   
+**Install** 
+首先必須先安裝mamba(注意，使用conda安裝會使他們衝突，所以請到mamba官網上使用mambaforge安裝)
+https://github.com/conda-forge/miniforge#mambaforge
+安裝好mamba後
+```
+# install metawrap:
+$mamba create -y --name metawrap-env --channel ursky metawrap-mg=1.3.2
+$conda activate metawrap-env
+
+# To fix the CONCOCT endless warning messages in metaWRAP=1.2+, run
+$conda install -y blas=2.5=mkl
+$ conda deactivate
+
+#下載CheckM_DB
+mkdir MY_CHECKM_FOLDER
+
+# Now manually download the database:
+cd MY_CHECKM_FOLDER
+wget https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz
+tar -xvf *.tar.gz
+rm *.gz
+cd ../
+# Now you need to tell CheckM where to find this data before running anything:
+checkm data setRoot     # CheckM will prompt to to chose your storage location
+# On newer versions of CheckM, you would run:
+checkm data setRoot /path/to/your/dir/MY_CHECKM_FOLDER
+
+```  
+**Binning**    
+```
+$conda activate metawrap-env
+
+#Binrefinment
+```
