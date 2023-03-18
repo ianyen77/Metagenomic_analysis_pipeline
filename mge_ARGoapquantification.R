@@ -58,11 +58,13 @@ arg<-as.data.frame(t(arg))
 arg$sum<-apply(arg,1,sum)
 arg$location<-c("Raw","Raw","Raw","Finished","Finished","Finished","Upstream","Upstream","Upstream","Midstream","Midstream","Midstream","Downstream","Downstream","Downstream")
 arg$location<-factor(arg$location,levels = c("Raw","Finished","Upstream","Midstream","Downstream"))
-MGE_ARG<-cbind(subtype_16snormalize,arg$sum,arg$location)
-colnames(MGE_ARG)[3]<-"arg_sum"
-colnames(MGE_ARG)[4]<-"location"
-ggplot(MGE_ARG,aes(x=subtype_sum,y=arg_sum))+
-  geom_point(color="#80B1D3",size=3)+geom_smooth(method =lm,color="#80B1D3")+theme_bw()+labs(x="MGEs abundance against 16S",y="ARGs abundance against 16S")+
+subtype_16snormalize$sum<-apply(subtype_16snormalize[,2:19],1,sum)
+MGE_ARG<-as.data.frame(cbind(subtype_16snormalize$sum,arg$sum,arg$location))
+colnames(MGE_ARG)[1]<-"MGE_sum"
+colnames(MGE_ARG)[2]<-"arg_sum"
+colnames(MGE_ARG)[3]<-"location"
+ggplot(MGE_ARG,aes(x=MGE_sum,y=arg_sum))+
+  geom_point(color="#8DD3C7",size=3)+geom_smooth(method =lm,color="#8DD3C7")+theme_bw()+labs(x="MGEs abundance against 16S",y="ARGs abundance against 16S")+
   theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
 cor.test(MGE_ARG$subtype_sum,MGE_ARG$arg_sum,method = "pearson")
 ?geom_smooth
