@@ -5,8 +5,8 @@ use Getopt::Std;
 
 getopt("ioh");
 
-unless (@ARGV && $opt_o && $opt_i) {
-    print "-o output directory(abs_path)\n";
+unless (@ARGV && $opt_o && $opt_i&& $opt_h) {
+    print "-o output merge directory(abs_path)\n";
     print "-i iutput clean sequence directory(abs_path)\n";
     print "-ARGV are input clean*_1.fastq file(abs_path)\n";
     print "-h humann output dirctory(abs_path)\n";

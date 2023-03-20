@@ -6,10 +6,9 @@
 #--------------------------------------------------
 #
 use Getopt::Std;
-getopt("birom");
+getopt("irom");
 
-unless (@ARGV && $opt_o && $opt_i && $opt_r && $opt_b && $opt_m) {
-    print "-b bin folder of perl script\n";
+unless (@ARGV && $opt_o && $opt_i && $opt_r && $opt_m) {
     print "-i iutput ARC.fa(abs_path)\n";
     print "-r input clean reads folder(abs_path)\n";
     print "-o output coverage directory(abs_path)\n";
@@ -93,9 +92,9 @@ print "$filename dataset= $size GB\n";
 
 #寫一個暫用的RScript來計算ARC coverage
 #指定要用的檔案
-$ARC_class_xlsx=$opt_m.$filename."ARC_classfication.xlsx";
-$ARC_cov_listall=$opt_o.$filename."ARC_class_cov_all.xlsx";
-$ARC_cov_listsel=$opt_o.$filename."ARC_class_cov_select.xlsx";
+$ARC_class_xlsx=$opt_m.$filename."_ARC_classfication.xlsx";
+$ARC_cov_listall=$opt_o.$filename."_ARC_class_cov_all.xlsx";
+$ARC_cov_listsel=$opt_o.$filename."_ARC_class_cov_select.xlsx";
 $rscript = "/home/tungs-lab/temp.R";
 open(R,">",$rscript);
 $trs = <<RS;
