@@ -8,6 +8,8 @@ library("tidyverse")
 library("car")
 library("FSA")
 library("mdthemes")
+library(ggpubr)
+library("ggpmisc")
 library(RColorBrewer)
 #這邊是針對evalue, idendity,aa length 做一些篩選,根據你要的條件調整過
 evaluematch<-1e-7
@@ -66,7 +68,10 @@ colnames(MGE_ARG)[3]<-"location"
 ggplot(MGE_ARG,aes(x=MGE_sum,y=arg_sum))+
   geom_point(color="#80B1D3",size=3,alpha=0.7)+geom_smooth(method =lm,color="#80B1D3",alpha=0.3) +theme_bw()+labs(x="Total MGEs abundance against 16S",y="Total ARGs abundance against 16S")+
   theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
-cor.test(MGE_ARG$MGE_sum,MGE_ARG$arg_sum,method = "pearson")
+##ggscatter---------------------
+ggscatter(MGE_ARG,x="MGE_sum",y="arg_sum", add = "reg.line", conf.int = TRUE,  color=  "#80B1D3",alpha=0.7,size=3,
+          add.params = list(fill = "lightgray"))+stat_cor(method = "pearson", label.x =0.19, label.y = 0.18)+theme_bw()+labs(x="Total MGEs abundance against 16S",y="Total ARGs abundance against 16S")+
+  theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
 #畫一張MGE豐度圖
 MGE_plotdata<-MGE_ARG%>%
   group_by(location)%>%
