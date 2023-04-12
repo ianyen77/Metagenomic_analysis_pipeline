@@ -26,7 +26,7 @@ for ($x=0; $x<@ARGV; $x++){
 	$kraken2_mpa_report=$opt_o.$filename."_mpa.txt";
 	$kraken2_mpa_report_wildcard=$opt_o."*_mpa.txt";
 	$kraken2_mpa_report_combine=$opt_o."combined_mpa.txt";
-	system("kraken2 --db ~/DB/kraken2/DB --threads 18 --confidence 0.1 --report $kraken2report --paired $file1 $file2");
+	system("kraken2 --db /medua/sf_sf/DB/kraken2/DB --threads 18 --confidence 0.1 --report $kraken2report --paired $file1 $file2");
 	system("~/KrakenTools-1.2/kreport2mpa.py -r $kraken2report  -o $kraken2_mpa_report");
 	}
 	system("~/KrakenTools-1.2/combine_mpa.py -i $kraken2_mpa_report_wildcard -o $kraken2_mpa_report_combine");
