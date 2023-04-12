@@ -8,8 +8,9 @@ library("tidyverse")
 library("car")
 library("FSA")
 library("mdthemes")
+library(ggpubr)
+library("ggpmisc")
 library(RColorBrewer)
-install.packages("Ploty")
 #這邊是針對evalue, idendity,aa length 做一些篩選,根據你要的條件調整過
 evaluematch<-1e-7
 identitymatch<-80
@@ -59,15 +60,30 @@ arg$sum<-apply(arg,1,sum)
 arg$location<-c("Raw","Raw","Raw","Finished","Finished","Finished","Upstream","Upstream","Upstream","Midstream","Midstream","Midstream","Downstream","Downstream","Downstream")
 arg$location<-factor(arg$location,levels = c("Raw","Finished","Upstream","Midstream","Downstream"))
 subtype_16snormalize$sum<-apply(subtype_16snormalize[,2:19],1,sum)
-MGE_ARG<-as.data.frame(cbind(subtype_16snormalize$sum,arg$sum,arg$location))
+MGE_ARG<-as.data.frame(cbind(as.data.frame(cbind(subtype_16snormalize$sum,arg$sum)),arg$location))
 colnames(MGE_ARG)[1]<-"MGE_sum"
 colnames(MGE_ARG)[2]<-"arg_sum"
 colnames(MGE_ARG)[3]<-"location"
+#先畫MGE跟ARG豐度的scatter plot
 ggplot(MGE_ARG,aes(x=MGE_sum,y=arg_sum))+
-  geom_point(color="#8DD3C7",size=3)+geom_smooth(method =lm,color="#8DD3C7")+theme_bw()+labs(x="MGEs abundance against 16S",y="ARGs abundance against 16S")+
+  geom_point(color="#80B1D3",size=3,alpha=0.7)+geom_smooth(method =lm,color="#80B1D3",alpha=0.3) +theme_bw()+labs(x="Total MGEs abundance against 16S",y="Total ARGs abundance against 16S")+
   theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
-cor.test(MGE_ARG$subtype_sum,MGE_ARG$arg_sum,method = "pearson")
-?geom_smooth
+##ggscatter---------------------
+ggscatter(MGE_ARG,x="MGE_sum",y="arg_sum", add = "reg.line", conf.int = TRUE,  color=  "#80B1D3",alpha=0.7,size=3,
+          add.params = list(fill = "lightgray"))+stat_cor(method = "pearson", label.x =0.19, label.y = 0.18)+theme_bw()+labs(x="Total MGEs abundance against 16S",y="Total ARGs abundance against 16S")+
+  theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
+#畫一張MGE豐度圖
+MGE_plotdata<-MGE_ARG%>%
+  group_by(location)%>%
+  summarise(type_mean=mean(MGE_sum),type_sd=sd(MGE_sum))
+MGE_plotdata$location<-factor(MGE_plotdata$location,levels=c("Raw","Finished","Upstream","Midstream","Downstream"))
+ggplot(MGE_plotdata)+geom_bar(aes(x=location, y=type_mean), stat="identity",fill="#8DD3C7",alpha=0.7,width=0.8)+geom_errorbar(aes(x=location,ymin=type_mean-type_sd, ymax=type_mean+type_sd), width=.2,position=position_dodge(.9))+
+  theme_bw()+ labs(x="Location",y="Total MGEs abundance normalization against 16S")+theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))
+display.brewer.pal(n=12,name="Set3")
+brewer.pal(n=12,name="Set3")
+color<-c("#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3")
+
+
 #分析顯著差異
 varaible_and_group<-subtype_sum~location#想測試的變數跟組別
 #我們必須先檢查數據是不是常態分布及變異數的同質性，才能決定我們要用的檢定方法。
@@ -102,16 +118,3 @@ pairwise.t.test(MGE_ARG$subtype_sum,MGE_ARG$location,p.adjust.method = "BH")
 pairwise.wilcox.test(data$bacitracin,data$location,p.adjust.method = "BH")
 wilcox.test(Data.levels[[5]]$bacitracin,Data.levels[[4]]$bacitracin,p.adjust.method = "BH")
 
-#先畫一張MGE豐度圖
-varaible_group_mean<-MGE_ARG%>%
-  group_by(location)%>%
-  summarise(type_mean=mean(subtype_sum),type_sd=sd(subtype_sum))
-varaible_group_mean$location<-factor(varaible_group_mean$location,levels=c("Raw","Finished","Upstream","Midstream","Downstream"))
-ggplot(varaible_group_mean)+geom_bar(aes(x=location, y=type_mean), stat="identity",fill="#8DD3C7")+geom_errorbar(aes(x=location,ymin=type_mean-type_sd, ymax=type_mean+type_sd), width=.2,position=position_dodge(.9))+
-  theme_bw()+ labs(x="Location",y="Total MGEs abundance normalization against 16S")+theme(axis.title = element_text(size=13),axis.text =element_text(size=12.5)  ,legend.title= element_text(size=12),legend.text = element_text(size=12))+
-  geom_line(data=tibble(x=c(1,3),y=c(0.35,0.35)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=2,y=0.355),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+geom_line(data=tibble(x=c(3,5),y=c(0.34,0.34)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=4,y=0.345),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+
-  geom_line(data=tibble(x=c(2,3),y=c(0.33,0.33)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=2.5,y=0.335),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)+geom_line(data=tibble(x=c(3,4),y=c(0.32,0.32)),aes(x=x,y=y),inherit.aes = F,size=0.8)+geom_text(data=tibble(x=3.5,y=0.325),aes(x=x,y=y,label="***"),size=5,inherit.aes = F)
-RColorBrewer::display.brewer.all()
-display.brewer.pal(n=12,name="Set3")
-brewer.pal(n=12,name="Set3")
-color<-c("#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3")

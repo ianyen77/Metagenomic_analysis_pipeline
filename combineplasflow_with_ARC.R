@@ -1,0 +1,10 @@
+library(openxlsx)
+library(tidyverse)
+library(pheatmap)
+library(RColorBrewer)
+data_contig<-read.xlsx("C:/Users/USER/Desktop/lab/實驗/Metagenomic in DWDS/DATA/newDATA/ARC_analysis/ARC_phyla_整理.xlsx",sheet=1)
+data_plasflow<-read.xlsx("C:/Users/USER/Desktop/plasflow out.xlsx",sheet=2,colNames = T)
+data_plasflow<-data_plasflow %>% 
+  separate(label,into=c("type","pla_taxon"))
+data<-merge(data_contig,data_plasflow,by="contig",all.x = T)
+write.xlsx(data,"C:/Users/USER/Desktop/ARC_analysis_phyla_plasflow.xlsx")
