@@ -134,7 +134,7 @@ readslength<-150
 size<-$size
 #計算coverage
 ARC_list_all<-coverage_dianomd_list%>%
-  mutate(orf_coverage=(Avg_fold*readslength/(orf_length*size)))
+  mutate(orf_coverage=(Avg_fold/size))
 ARC_list_select<-ARC_list_all%>%
   select(orf_qseqid,type,subtype,orf_coverage)
 write.xlsx(ARC_list_all,file="$ARC_cov_listall")

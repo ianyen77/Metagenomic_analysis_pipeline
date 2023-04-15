@@ -1,6 +1,4 @@
 #!/bin/bash
-##Author: yenjh3910
-#This shell script is from yen,for humann post porcressing
 
 # Join the output files
 mkdir ~/humann3/sample_join
