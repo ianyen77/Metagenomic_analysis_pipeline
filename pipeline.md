@@ -30,8 +30,6 @@ $ source ~/.bashrc
 $ conda info
 $ cd
 ```
-
-
 ### [Bioconda Installation](https://bioconda.github.io/)
 ```
 $ conda config --add channels defaults
@@ -42,19 +40,42 @@ $ conda config --set channel_priority strict
 $ conda config --show channels
 ```
 
+
 ## Reads Quality Control
 ### [Fastp](https://github.com/OpenGene/fastp#install-with-bioconda)
+Tirmming low quality reads
 
 **Install**  
 ```
 #note:fastp version in bioconda may be not the latest
-conda install -c bioconda fastp 
+$ conda install -c bioconda fastp 
 ```
+**Usage**
+```
+$ conda activate
+$ fastp -i reads_1.fq -I reads_2.fq -o reads_trimmed_1.fq -O reads_trimmed_2.fq
+```
+
+### [FastQC](https://github.com/OpenGene/fastp#install-with-bioconda)
+
+**Install**  
+```
+$ conda install -c bioconda fastqc
+```
+**Usage**
+```
+$ conda activate
+$ fastqc
+```
+
 
 ## Taxanomic Profile
 ### [Kraken2](https://github.com/DerrickWood/kraken2/wiki/Manual)
-#### Create environment and install
+Short reads taxanomic assigment(k-mer algorithm)  
+
+**Install**
 ```
+#create environment 
 $ conda create --name kraken2
 $ conda activate kraken2
 
@@ -62,33 +83,53 @@ $ conda activate kraken2
 $ conda install kraken2
 
 # Version
-$ kraken2 --version
+kraken2 –version
 $ conda update kraken2 -c bioconda
-```
-#### Download NCBI taxonomic information
-```
-$ cd ~/db
-$ kraken2-build --download-taxonomy --threads 16 --db kraken_db
-```
-#### Debug  
-1. Refer to https://qiita-com.translate.goog/kohei-108/items/ce5fdf10c11d1e7ca15b?_x_tr_sl=ja&_x_tr_tl=zh-TW&_x_tr_hl=zh-TW&_x_tr_pto=sc :  
-Change rsync_from_ncbi.pl from https://translate.google.com/website?sl=ja&tl=zh-TW&hl=zh-TW&prev=search&u=https://github.com/DerrickWood/kraken2/issues/465%23issuecomment-870726096  
+```  
 
-2. https://github.com/DerrickWood/kraken2/issues/518  
-rsync_from_ncbi.pl  Line 46:  
+**Kraken2 DB configuration**
+```
+$ mkdir -p ~/DB/kraken2
+$ cd  ~/DB/kraken2
+
+#Download NCBI taxonomic information
+$ kraken2-build --download-taxonomy --threads 16 --db ~/DB/kraken2
+``` 
+#### Debug 
+1. https://qiita-com.translate.goog/kohei-108/items/ce5fdf10c11d1e7ca15b?_x_tr_sl=ja&_x_tr_tl=zh-TW&_x_tr_hl=zh-TW&_x_tr_pto=sc
+2.  https://github.com/DerrickWood/kraken2/issues/518  
+Change "rsync_from_ncbi.pl" (in conda directory) Line 46:  
 ```
 if (! ($full_path =~ s#^ftp://${qm_server}${qm_server_path}/##))  to 
 if (! ($full_path =~ s#^https://${qm_server}${qm_server_path}/##))
-```
+``` 
 #### Download partial library
 ```
-$ kraken2-build --download-library bacteria --threads 16 --db kraken_db
+$ kraken2-build --download-library bacteria --threads 16 --db ~/DB/kraken2
 ```
 #### Create DB from library
 ```
-$ cd ~/db/kraken_db
-$ kraken2-build --build --threads 16 --db ./ --max-db-size 52000000000
+$ cd ~/DB/kraken2
+$ kraken2-build --build --threads 16 --db ~/DB/kraken2
 ```
+#### Alternative DB confguration  
+[Prebuilt DB](https://benlangmead.github.io/aws-indexes/k2)   
+
+
+A Kraken 2 database is a directory containing at least 3 files:   
+
+
+```hash.k2d```: Contains the minimizer to taxon mappings   
+```opts.k2d```: Contains information about the options used to build the database   
+```taxo.k2d```: Contains taxonomy information used to build the database
+
+
+Other files may also be present, remove after successful build of the database  
+
+**Usage**
+
+# 以下未寫  
+
 ### [Bracken](https://github.com/jenniferlu717/Bracken)
 #### Installation
 ```
@@ -116,8 +157,7 @@ $ bracken -h
 ```
 $ bracken-build -d ~/db/kraken_db -t 16 -k 35 -l 150
 ```
-#### Alternative (download pre-built database)
-https://benlangmead.github.io/aws-indexes/k2
+
 
 #### Usage 
  ```
