@@ -1,5 +1,5 @@
 # A metagenomic survey of antibiotic resistome along a drinking water distribution system
-Complete Metagenomic analysis piepline of DWDS ARGs
+Complete Metagenomic analysis piepline for ARGs survey
 
 ## Table of Contents
 1. [Anaconda & Bioconda Installation]()
@@ -8,6 +8,7 @@ Complete Metagenomic analysis piepline of DWDS ARGs
 4. [Taxanomic Profile]()
 5. []()
 6. []()
+   
 
 ## Anaconda & Bioconda Installation
 ### [Anaconda installation](https://www.anaconda.com/download/)
@@ -29,9 +30,10 @@ $ source ~/.bashrc
 $ conda info
 $ cd
 ```
+
+
 ### [Bioconda Installation](https://bioconda.github.io/)
 ```
-# Bioconda set up channels
 $ conda config --add channels defaults
 $ conda config --add channels bioconda
 $ conda config --add channels conda-forge
@@ -39,6 +41,16 @@ $ conda config --set channel_priority strict
 # View channel
 $ conda config --show channels
 ```
+
+## Reads Quality Control
+### [Fastp](https://github.com/OpenGene/fastp#install-with-bioconda)
+
+**Install**  
+```
+#note:fastp version in bioconda may be not the latest
+conda install -c bioconda fastp 
+```
+
 ## Taxanomic Profile
 ### [Kraken2](https://github.com/DerrickWood/kraken2/wiki/Manual)
 #### Create environment and install
