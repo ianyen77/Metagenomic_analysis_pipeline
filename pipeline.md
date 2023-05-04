@@ -14,7 +14,7 @@ Complete Metagenomic analysis piepline for ARGs survey
 ### [Anaconda installation](https://www.anaconda.com/download/)
 ```
 #Enter Linux Terminal
-$ sudo apt-get update
+$ sudo apt-get updat
 $ cd /tmp
 $ apt-get install wget
 
