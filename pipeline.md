@@ -14,7 +14,7 @@ Complete Metagenomic analysis piepline for ARGs survey
 ### [Anaconda installation](https://www.anaconda.com/download/)
 ```
 #Enter Linux Terminal
-$ sudo apt-get updat
+$ sudo apt-get update
 $ cd /tmp
 $ apt-get install wget
 
@@ -118,17 +118,16 @@ $ kraken2-build --build --threads 16 --db ~/DB/kraken2
 
 A Kraken 2 database is a directory containing at least 3 files:   
 
-
-```hash.k2d```: Contains the minimizer to taxon mappings   
-```opts.k2d```: Contains information about the options used to build the database   
-```taxo.k2d```: Contains taxonomy information used to build the database
+hash.k2d: Contains the minimizer to taxon mappings   
+opts.k2d: Contains information about the options used to build the database   
+taxo.k2d: Contains taxonomy information used to build the database
 
 
 Other files may also be present, remove after successful build of the database  
 
 **Usage**
 
-# 以下未寫  
+# unwrite
 
 ### [Bracken](https://github.com/jenniferlu717/Bracken)
 #### Installation
@@ -151,8 +150,8 @@ $ export PATH="~/Bracken/src:$PATH"
 $ source ~/.bashrc
 
 # Test 
-$ bracken -h
-```
+$ bracken -h   
+```   
 #### Build bracken library
 ```
 $ bracken-build -d ~/db/kraken_db -t 16 -k 35 -l 150
@@ -163,8 +162,48 @@ $ bracken-build -d ~/db/kraken_db -t 16 -k 35 -l 150
  ```
 $ ~/shell_script/kraken2.sh
  ```
-## ARGs Profile
-### [ARGs-OAP](https://github.com/xinehc/args_oap)
+ # 以上未寫
+## ARGs/MGEs/BRGs Profile
+### [ARGs-OAPv2.2](https://github.com/xiaole99/ARGs_OAP_v2_manual)
+1. This version is the version that I use in my thesis(ARGs profile,ARC blast)
+2. This version of DB(SARG v2.2) didn't have ARGs mechanisms
+3. Substitute ARG DB to MGE/BMG(MGEs or BacMet) can do the exact same quantification of ARGOAP do
+   
+#### Installation
+```
+$ mkdir -p ~/ARG_OAP/ARG_OAPv2.2
+$ cd ~/ARG_OAP/ARG_OAPv2.2
+$ wget https://smile.hku.hk/SARGs/static/images/Ublastx_stageone2.2.tar.gz
+$ tar zxvf Ublastx_stageone2.2.tar.gz
+
+#download usearch manually and put into bin directory
+$ cd ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/bin
+$ wget https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz
+$ gzip -d usearch11.0.667_i86linux32.gz
+#rename usearch & make it excutable
+$ mv usearch11.0.667_i86linux32 usearch
+#chmod 777 usearch
+``` 
+Check the DB directory has all the required database
+If not
+```
+$ cd ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/DB
+$ usearch -makeudb_ublast gg85.fasta -output gg85.udb
+$ usearch -makeudb_ublast SARG.2.2.fasta -output SARG.2.2.udb
+```
+#### ARGs analysis
+1. create meta-data.txt   
+
+|SampleID|Name|Category|LibrarySize|
+|--|----|----|-|
+|1|T1-W-1|Raw|150|
+|2|T2-W-2|Finished|150|
+2. perl script
+```
+```
+#以下未寫
+
+### [ARGs-OAPv3.0](https://github.com/xinehc/args_oap)
 #### Installation
 ```
 $ conda create -n args_oap
