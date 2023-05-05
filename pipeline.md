@@ -93,9 +93,9 @@ $ mkdir -p ~/DB/kraken2
 $ cd  ~/DB/kraken2
 
 #Download NCBI taxonomic information
-$ kraken2-build --download-taxonomy --threads 16 --db ~/DB/kraken2
+$ kraken2-build --download-taxonomy --threads 16 --db ~/DB/kraken2 --use-ftp
 ``` 
-#### Debug 
+#### Debug (This bug was fixed by using --use-ftp)
 1. https://qiita-com.translate.goog/kohei-108/items/ce5fdf10c11d1e7ca15b?_x_tr_sl=ja&_x_tr_tl=zh-TW&_x_tr_hl=zh-TW&_x_tr_pto=sc
 2.  https://github.com/DerrickWood/kraken2/issues/518  
 Change "rsync_from_ncbi.pl" (in conda directory) Line 46:  
@@ -105,7 +105,7 @@ if (! ($full_path =~ s#^https://${qm_server}${qm_server_path}/##))
 ``` 
 #### Download partial library
 ```
-$ kraken2-build --download-library bacteria --threads 16 --db ~/DB/kraken2
+$ kraken2-build --download-library bacteria --threads 16 --db ~/DB/kraken2 --use-ftp
 ```
 #### Create DB from library
 ```
@@ -200,8 +200,9 @@ $ usearch -makeudb_ublast SARG.2.2.fasta -output SARG.2.2.udb
 |2|T2-W-2|Finished|150|
 2. perl script
 ```
+#stageone 
+perl 
 ```
-#以下未寫
 
 ### [ARGs-OAPv3.0](https://github.com/xinehc/args_oap)
 #### Installation
