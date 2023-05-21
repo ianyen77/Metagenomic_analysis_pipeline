@@ -69,7 +69,9 @@ $ fastqc
 ```
 
 
-## Taxanomic Profile
+## Taxanomic Profile  
+I highly recommend do not use Kraken individually, combining Kraken output with Bracken for more accurate abundance estimation
+
 ### [Kraken2](https://github.com/DerrickWood/kraken2/wiki/Manual)
 Short reads taxanomic assigment(k-mer algorithm)  
 
@@ -95,7 +97,7 @@ $ cd  ~/DB/kraken2
 #Download NCBI taxonomic information
 $ kraken2-build --download-taxonomy --threads 16 --db ~/DB/kraken2 --use-ftp
 ``` 
-#### Debug (This bug was fixed by using --use-ftp)
+#### Debug (**This bug was fixed by using --use-ftp**)
 1. https://qiita-com.translate.goog/kohei-108/items/ce5fdf10c11d1e7ca15b?_x_tr_sl=ja&_x_tr_tl=zh-TW&_x_tr_hl=zh-TW&_x_tr_pto=sc
 2.  https://github.com/DerrickWood/kraken2/issues/518  
 Change "rsync_from_ncbi.pl" (in conda directory) Line 46:  
@@ -122,47 +124,48 @@ hash.k2d: Contains the minimizer to taxon mappings
 opts.k2d: Contains information about the options used to build the database   
 taxo.k2d: Contains taxonomy information used to build the database
 
-
 Other files may also be present, remove after successful build of the database  
 
-**Usage**
-
-# unwrite
+**Useage**
+```
+#I highly recommend do not use this script, use kraken2+bracken
+perl -w kraken2_bracken.pl
+```
 
 ### [Bracken](https://github.com/jenniferlu717/Bracken)
 #### Installation
 ```
-# Install prerequisite
-$ sudo apt-get install build-essential
-
-# Install Bracken
-$ git clone https://github.com/jenniferlu717/Bracken.git
-$ cd Bracken
-$ bash install_bracken.sh
-$ cd src/ && make
-
-# Add dictionary to path
-$ nano ~/.bashrc
-# Add to last row
-$ export PATH="~/Bracken:$PATH"
-$ export PATH="~/Bracken/src:$PATH"
-# Load the new $PATH
-$ source ~/.bashrc
+$ conda activate kraken2 
+$ conda install -c bioconda bracken
 
 # Test 
 $ bracken -h   
 ```   
 #### Build bracken library
 ```
+$ conda activate kraken2
 $ bracken-build -d ~/db/kraken_db -t 16 -k 35 -l 150
 ```
 
+#### Usage  Kraken2 +bracken
 
-#### Usage 
- ```
-$ ~/shell_script/kraken2.sh
- ```
- # 以上未寫
+```
+$ perl -w kraken2_bracken.pl
+#you can see how many arguments you need to give to this script, and what it should be
+
+$ perl -w kraken2_bracken.pl -i .........
+
+#After running the script, you should put all out into the same directory, for example, Class, and do the same things for  phyla, order, and so on and so for
+
+$ cd ~/the/directory/of/bracken_out
+$ mkdir ./C_out
+$ mv *.C.bracken ./C_out/
+
+#into R 
+use krkaen2_bracken_combine.R 
+#handle all the file bracken created,and combine all output together
+```
+
 ## ARGs/MGEs/BRGs Profile
 ### [ARGs-OAPv2.2](https://github.com/xiaole99/ARGs_OAP_v2_manual)
 1. This version is the version that I use in my thesis(ARGs profile,ARC blast)
@@ -188,39 +191,87 @@ Check the DB directory has all the required database
 If not
 ```
 $ cd ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/DB
-$ usearch -makeudb_ublast gg85.fasta -output gg85.udb
-$ usearch -makeudb_ublast SARG.2.2.fasta -output SARG.2.2.udb
+$ usearch -makeudb_usearch gg85.fasta -output gg85.udb
+$ usearch -makeudb_usearch SARG.2.2.fasta -output SARG.2.2.udb
 ```
 #### ARGs analysis
-1. create meta-data.txt   
-
+1. create meta-data.txt in ARG-OAP directory manually
+  
+Example
 |SampleID|Name|Category|LibrarySize|
 |--|----|----|-|
 |1|T1-W-1|Raw|150|
-|2|T2-W-2|Finished|150|
-2. perl script
+|2|T2-W-2|Finished|150|  
+2. Stageone
 ```
 #stageone 
-perl 
+$ mkdir -p ~/ARG_OAPout/SARG_v2.2_out
+$ perl -w ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/argoap_pipeline_stageone_version2.pl -i /media/sf_sf/cleanread_new/ -m ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/meta-data.txt  -o ~/ARG_OAPout/SARG_v2.2_out/stageone -n 16 -f fq -s
+```
+3. Stagetwo
+```
+$ perl -w ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/argoap_pipeline_stagetwo_version2.pl -i ~/ARG_OAPout/SARG_v2.2_out/stageone/extracted.fa -m ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/stageone/meta_data_online.txt -o ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone/stagetwo -n 16
+```
+#### MGEs(Mobile Genetic Elements) analysis
+0. Download MGEs_DB and convert NT sequence to AA sequence   
+[Database](https://github.com/KatariinaParnanen/MobileGeneticElementDatabase)
+```
+$ mkdir ~/MGE_BMG_aod
+$ cd ~/MGE_BMG_aod
+$ cp -R ~/ARG_OAP/ARG_OAPv2.2/Ublastx_stageone ~/MGE_BMG_aod
+```
+1. create MGEs DB for ARGOAP pipeline and blastx
+```
+$ cd ~/MGE_BMG_aod/Ublastx_stageone/bin
+$ usearch -makeudb_usearch MGE_2018_amino_sl.fasta -output ../DB/MGE_2018.udb
+$ conda activate
+$ cd ~/MGE_BMG_aod/Ublastx_stageone/DB
+$ makeblastdb -in MGE_2018_amino_sl.fasta -dbtype prot
 ```
 
+2. adjust stageone.pl in MGE_BMG_aod/ and run stageone.pl   
+adjust stageone.pl line 46 to costom DB 
+```
+my $ARDB_PATH ||= "$ublastxdir/DB/MGE_2018.udb"; 
+```
+same stageone procress
+```
+$ mkdir ~/ARG_OAPout/MGE_2018_out
+$ perl -w  ~/MGE_BMG_aod/Ublastx_stageone/argoap_pipeline_stageone_version2.pl -i /media/sf_sf/cleanread_new/ -m  ~/MGE_BMG_aod/Ublastx_stageone/meta-data.txt  -o ~/ARG_OAPout/MGE_2018_out/stageone -n 16 -f fq -s
+```
+3. Using Blastx to blast extracted sequence with MGEs DB
+```
+$ conda activate
+$ cd ~/ARG_OAPout/MGE_2018_out/stageone
+$ blastx -query extracted.fa -out MGEblastout.txt -db ~/~/MGE_BMG_aod/Ublastx_stageone/DB/MGE_2018_amino_sl.fasta -outfmt 6 -num_threads 14 -max_target_seqs 1
+```   
+
+4. into R and reannontate blastouput  
+using "mge_ARGoapquantification.R"
+
+whatever DB you want to analyze, just use this method you can get the same quantification method as ARGs-OAP
+
 ### [ARGs-OAPv3.0](https://github.com/xinehc/args_oap)
+So far I don't read any paper that used the v3 DB and pipeline except the ARGs-OAP developer, This section is just in case (2023/05/21)
 #### Installation
 ```
-$ conda create -n args_oap
+$  conda create -n args_oap -c bioconda -c conda-forge args_oap
 $ conda activate args_oap
-$ conda config --set channel_priority flexible
-$ conda install -c bioconda -c conda-forge args_oap
 ```
 #### ARGs analysis
 ```
 # Stage one
-$ args_oap stage_one -i ~/clean_read -o ~/args_oap/ARG/stage_one_output -f fastq -t 16
+$ args_oap stage_one -i /media/sf_sf/cleanread_new/ -o ~/args_oap_v3_out/ARG/stage_one_output -f fq -t 18
+
 
 # Stage two (e_value: 1e-7, identity: 80, aa_length,25)
-$ args_oap stage_two -i ~/args_oap/ARG/stage_one_output -o ~/args_oap/ARG/stage_two_output -t 16
+$ args_oap stage_two -i ~/args_oap_v3_out/ARG/stage_one_output -o ~/args_oap_v3_out/ARG/stage_two_output -t 18
 ```
+
 #### MGEs (Mobile Genetic Elements) analysis
+I haven't tried to use v3 to analyze MGEs and BMGs, so this part is from our 先輩 睿紘's pipeline 
+(shout out to 睿紘, thanks for you teaching me everything)  
+
 Database: https://github.com/KatariinaParnanen/MobileGeneticElementDatabase
 1. Covert nucleotide acid to amino acid under fasta format
 2. Create MGE_structure.txt manually or use curated structure already made
@@ -269,6 +320,9 @@ $ args_oap stage_two -i ~/args_oap/BacMet/stage_one_output -o ~/args_oap/BacMet/
 $ args_oap stage_two -i ~/args_oap/BacMet/stage_one_output -o ~/args_oap/BacMet/stage_two_output_evalue-5_id70 --e 1e-5 --id 70 -t 16 --database ~/args_oap/BacMet/BacMet_exp_metal.fasta --structure1 ~/ar
 gs_oap/BacMet/metal_only_structure.txt
 ```
+
+
+# 以下未寫
 ## Functional Profile
 ### [HUMAnN 3.0](https://github.com/biobakery/humann/tree/8d69f3c84ca7bfd7519ced7fcf94b8356c915090)
 #### Installation
