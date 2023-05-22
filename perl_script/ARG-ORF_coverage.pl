@@ -20,6 +20,22 @@ unless (@ARGV && $opt_b && $opt_o && $opt_i && $opt_f && $opt_r &&$opt_p) {
     die();
     }
     
+while (1) {
+    print "Check gene name DB \n";
+    print "SARG_adjust_DB_xlsx=~/metagenomic_pipeline/ARG-OAP/Ublastx_stageone2.2/Ublastx_stageone/DB/SARG_Struturelist_adjust.xlsx\n";
+    print "If the structure file right, type yes\n";
+    $response = <STDIN>;
+    chomp($response);
+
+    # 檢查回答是否為"yes"
+    if ($response eq "yes") {
+        last;  # 如果回答是"yes"，跳出循環
+    } else {
+        print "Adjust your DB file\n";
+        die();
+    }
+}
+
 $script1=$opt_b."diamond_blast_ORFlist_extract.pl";
 mkdir $opt_o;
 mkdir $opt_p;
