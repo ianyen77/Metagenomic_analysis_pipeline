@@ -269,7 +269,7 @@ $ args_oap stage_two -i ~/args_oap_v3_out/ARG/stage_one_output -o ~/args_oap_v3_
 ```
 
 #### MGEs (Mobile Genetic Elements) analysis
-I haven't tried to use v3 to analyze MGEs and BMGs, so this part is from our 先輩 睿紘's pipeline 
+I haven't tried to use v3 to analyze MGEs and BMGs, so this part is from our 先輩 睿紘's pipeline [Github](https://github.com/yenjh3910/bioinformatic_pipeline#readme)  
 (shout out to 睿紘, thanks for you teaching me everything)  
 
 Database: https://github.com/KatariinaParnanen/MobileGeneticElementDatabase
