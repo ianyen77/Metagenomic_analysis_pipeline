@@ -375,116 +375,100 @@ $ ~/shell_script/humann3.sh
 # Post processing
 $ ~/shell_script/humann3_post_processing.sh
 ```
-## Taxanomic Assignment of Assembly Contigs
-Use kraken2 to assign the toxanomy to individual assmebly contigs  
+# 以上未寫
+
+## Reads Assembly / Contigs QC/ ORFs prediction
+
+### Reads Assembly ([Megahit](https://github.com/voutcn/megahit))
+Installation
+```
+$ conda activate
+$ conda install -c bioconda megahit
+#Test 
+$ megahit
+```
+Usage  
+indivisual assembly or co-assembly is up to you
+```
+$ conda activate
+$ megahit -t 16 -m 0.95 -1 <file_1.fq> -2 <file_2.fq> --min-contig-len 500 -o <file.final.contigs>
+```
+## Contigs QC ([Quast](https://github.com/ablab/quast))
+Installation
+```
+$ conda create -n quast
+$ conda activate quast
+$ conda install -c bioconda quast
+```
+Usage
+```
+$ conda activate quast
+$ perl -w quast.pl
+```
+## ORFs prediction ([Prodigal]((https://github.com/hyattpd/Prodigal)))
+Installation
+```
+$ conda activate
+$ conda install -c bioconda prodigal
+$ prodigal 
+```
+
+Usage
+```
+#Single use
+$ prodigal -i <final_contigs> -o <prodigal_out> -a <prodigal_out.protein> -d <prodigal_out.nucl> -p meta
+
+#combine script(assembly and gene prediction)
+$ perl -w megahit_prodigal.pl
+```
+**Some papers combine CD-HIT with Prodigal output, but some papers don't do this , so you may need CD-HIT**
+
+## Contigs ARG gene predction(ARC)
+### [Diamond](https://github.com/bbuchfink/diamond)
+sequence Blast   
+
+Installation & makeDB
+```
+$ conda activate
+$ conda install -c bioconda -c conda-forge diamond
+
+# Make database(for blastx, make .dmnd from aa sequence)
+$ conda activate
+$ cd /media/sf_sf/DB/Diamond/DB
+$ diamond makedb --in SARG2.2_DB.fasta --db SARG2.2_DB.dmnd
+$ diamond makedb --in MGEs_database_aa.fasta --db MGE.dmnd
+$ diamond makedb --in bacmet_experiment.fasta --db bacmet_experiment.dmnd
+$ diamond makedb --in VFDB_coredataset.fasta --db VFDB_coredataset.dmnd
+```
+Basic Usage
+```
+#id=70,e=-10,query cover=70
+diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q <orf.nucl> -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o <blastout.txt>
+```
+Combine Usage  
+1. Annonation of ARG like-ORF(all contig)   
+2. Extract ARC fasta
+3. Predict ARC ORF (ARC)
+4. Reblast ARC ORFs with SARG
+5. Blast ARC ORFs to nr(for taxanomic Asseignment of ARCs)
+```
+perl -w ARGprediction_ARCextract.pl
+```
+6. blast ARC with MGEs/VF/BMG DB to find co-occurance
+```
+perl -w MGE_VF_blast.pl
+# Enter R 
+# UseR to reannonate gene name
+like MGE_diamond_hitted_reannonate.R
+
+```
+
+
+## Taxanomic Assignment of ARCs
+1. blast ARC ORF with NR DB
+2. Use Megan to classified NR blast output
+3. Use custom scripts doing voting method 
 #### Usage
 ```
-$ conda activate kraken2
-$ ~/shell_script/kraken2_contigs.sh
 ```
-## Gene Alignment to Assembly Contigs
-### [Prodigal](https://github.com/hyattpd/Prodigal) & [CD-HIT](https://github.com/weizhongli/cdhit)
-Gene prediction & (reductant sequence remove)
-```
-# Create environment
-$ conda create -n prodigal
-$ conda activate prodigal
-
-# Installation
-$ conda install -c bioconda prodigal
-$ conda install -c bioconda cd-hit
-
-# ORF perdiction
-$ ~/shell_script/prodigal_contigs.sh
-
-# Remove reductant sequence (Omit in the newest pipeline)
-$ ~/shell_script/cdhit_orf.sh
-```
-### [Diamond](https://github.com/bbuchfink/diamond)
-BLAST sequence
-```
-# Create environment
-$ conda create -n diamond
-$ conda activate diamond
-
-# Installation
-$ conda install -c bioconda diamond
-
-# Make database
-$ diamond makedb --in ~/db/args_oap_db/sarg.fasta --db ~/db/args_oap_db/SARG.dmnd
-$ diamond makedb --in ~/db/MGE_db/MGEs_database_aa.fasta --db ~/db/MGE_db/MGE.dmnd
-$ diamond makedb --in ~/db/BacMet_db/BacMet_exp_metal.fasta --db ~/db/BacMet_db/BacMet.dmnd
-$ diamond makedb --in ~/db/vfdb/VFDB_setB_pro.fa --db ~/db/vfdb/VFDB.dmnd
-
-# Run
-$ ~/shell_script/diamond_contigs.sh
-
-
-# R script
-$ cd ./contigs
-
-## Merge blast contigs with kraken2 taxonomy
-$ Rscript contigs_kraken2.R
-
-## QC & merge blast contigs with database
-$ Rscript contigs_ARG_diamond.R
-$ Rscript contigs_MGE_diamond.R
-$ Rscript contigs_VF_diamond.R
-
-## Extract contigs as mapping reference for coverage calculation
-$ Rscript extract_SARG_contigs.R
-$ Rscript extract_MGE_contigs.R
-$ Rscript extract_VF_contigs.R
-```
-## Calculate coverage of aligning contigs
-### [Bowtie2](https://github.com/BenLangmead/bowtie2) & [BBMap](https://github.com/BioInfoTools/BBMap)
-```
-# Enter environment
-$ conda activate diamond
-
-# Installation
-$ conda install -c bioconda bowtie2
-$ conda install -c bioconda bbmap
-
-# Build bowtie2 index
-$ ~/shell_script/bowtie2_build_contigs.sh
-
-# Bowtie2 mapping & coverage calculation
-$  ~/shell_script/coverage_contigs.sh
-```
-## Binning
-### [metaWRAP](https://github.com/bxlab/metaWRAP)
-```
-# Installation & environment creation
-
-## Install mamba
-$ conda install -y mamba
-## Download or clone this ripository
-$ git clone https://github.com/bxlab/metaWRAP.git
-
-## Configure
-$ mkdir ~/db/checkm_db
-$ cd ~/db/checkm_db
-$ wget https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz
-$ tar -xvf *.tar.gz
-$ rm *.gz
-
-## Make metaWRAP executable
-$ vi ~/.bashrc
-$ export PATH="~/metaWRAP/bin/:$PATH" # Add to last row
-
-## Make a new conda environment
-$ conda create -y -n metawrap-env python=2.7
-$ conda activate metawrap-env
-
-## Install all metaWRAP dependancies
-$ conda config --add channels defaults
-$ conda config --add channels conda-forge
-$ conda config --add channels bioconda
-$ conda config --add channels ursky
-$ mamba install --only-deps -c ursky metawrap-mg
-
-## Configure checkm
-$ conda install -c bioconda checkm-genome
-$ checkm data setRoot ~db/checkm_db # Tell CheckM where to find this data
-```
+## ORF coverage and contig coverage caculation
