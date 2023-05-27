@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
 #Author:IAN
+#This script is use for 1.handling MEGAN out(MEGAN will told you which taxa orf be assigned), and doing voting method of ARC(if >50% orf in the same contig has been assigned to the same taxa， the contig will be assigned to that taxa)
 #This script needs magan output, make sure you have do megan manually
 #-------------------------------
 use Getopt::Std;

@@ -18,7 +18,7 @@ unless (@ARGV && $opt_b && $opt_o && $opt_i && $opt_a && $opt_c) {
     }
 while (1) {
     print "Check DB and blast parameter\n";
-    print "Diamod blastx command: diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG_v3.2_20220917_Full_database.dmnd -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70\n";
+    print "Diamod blastx command: diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70\n";
     print "If the command is right, type yes\n";
     $response = <STDIN>;
     chomp($response);

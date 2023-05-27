@@ -1,8 +1,7 @@
 #!/usr/bin/perl -w
 #Author:2022/01/04
-#This is script for 1.mapping clean reads to ARC 2. statistic bowtie2 output (pile up) 3.利用r分析
+#This is script for 1.mapping clean reads to ARC 2. statistic bowtie2 output (pile up) 3. using R to connecnt bbmap out (coverage) and ARC out(with TAXA)
 #Needs open in conda env,make sure your open conda before use
-#
 #--------------------------------------------------
 #
 use Getopt::Std;
