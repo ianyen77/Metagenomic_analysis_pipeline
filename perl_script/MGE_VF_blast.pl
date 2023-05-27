@@ -25,7 +25,7 @@ for ($x=0; $x<@ARGV; $x++){
 	$MGE_diamond=$opt_m.$filename."MGEs.dmnd";
 	$VF_diamond=$opt_v.$filename."VF.dmnd";
 	$bac_diamond=$opt_b.$filename."BacMet.dmnd";
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/MGEs_2018nature_commu.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 50 -o $MGE_diamond");
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/VFDB_coredataset.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 50 -o $VF_diamond");
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/bacmet_experiment.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 50 -o $bac_diamond");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/MGEs_2018nature_commu.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $MGE_diamond");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/VFDB_coredataset.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $VF_diamond");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/DB/bacmet_experiment.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $bac_diamond");
 	}
