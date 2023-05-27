@@ -1,9 +1,9 @@
 #!/usr/bin/perl -w
 #Author:Ian
-#DATE:2023/01/04,
-#This is script for 1.Extract ARG-likes ORFs sequence form reblast diamond and ARC orf seq 2.output bowtie2 mapping file 3. statistic bowtie2 output (pile up) 4. use R to stastic coverage
+#DATE:2023/01/04
+#This is script for 1.Extract ARG-likes ORFs sequence form reblast diamond and ARC orf seq 2.output bowtie2 mapping file 3. statistic bowtie2 output (pile up) 4. use R to statistics coverage
 #Needs open in conda env,make sure your open conda before use(perl can't do that,so make sure you use activate base env before use this scripts)
-#這個腳本尚未完成-----------------
+
 #--------------------------------------------------
 #
 use Getopt::Std;
