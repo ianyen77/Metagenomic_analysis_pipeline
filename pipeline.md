@@ -467,8 +467,38 @@ like MGE_diamond_hitted_reannonate.R
 ## Taxanomic Assignment of ARCs
 1. blast ARC ORF with NR DB
 2. Use Megan to classified NR blast output
-3. Use custom scripts doing voting method 
-#### Usage
 ```
+#import DAA file and Meganize
+1.click File-Meganize.DAA file
+2.Files:choose DAA File, tick long reads
+3.Taxonomy:Load MeganMap DB mapping file
+4.LCA parameter: LCA Algorithm: longreads
+Read Alignment mode: read count
+Percent to cover: 51
+5.Apply
+
+#turn output to txt
+1. select all node of output
+2. (right click) slect inspect
+#you will see the format for example 
+NCBI [1]
+cellular organisms [0]
+Bacteria [29]
+Acidobacteria [0]
+
+3. open all inspect
+#for example you will get this
+Acidobacteria [0]
+unclassified Acidobacteria [1]
+k141_517147_2 [length=151, matches=25]
+
+4. Files: Exported selected Text
+5. save output
+```
+#### Usage
+after your save the output
+```
+#Use custom scripts doing voting method
+5. execute MEGAN_out_procress.pl
 ```
 ## ORF coverage and contig coverage caculation
