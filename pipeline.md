@@ -6,12 +6,12 @@ Complete Metagenomic analysis piepline for ARGs survey
    - [Anaconda & Bioconda Installation]()
 2. [Reads Quality Control]()
 3. [Reads Based analysis]()
-   - [ARGs/MGEs/MRGs Profile]()
+   - [ARGs/MGEs/BRGs Profile]()
    - [Taxanomic Profile]()
    - [Functional Profile]()
 4. [Assembly Based analysis]()
    - [Reads Assembly / Contigs QC/ ORFs prediction]()
-   - [Contigs ARG gene predction]()
+   - [Contigs ARG gene predction(ARC)]()
    - [Taxanomic assignment of Contigs]()
    - [ORF/Contigs coverage caculation]()
    - [MetaWRAP]()
@@ -27,11 +27,11 @@ Complete Metagenomic analysis piepline for ARGs survey
    - [MetaCHIP]()
 6. [Others]()
    - [SourceTracker2]()
-   - [NST]()
+   - [Assement of Bacterial community assembly(NST)]()
 
    
 
-## Anaconda & Bioconda Installation
+## Environment Setup
 ### [Anaconda installation](https://www.anaconda.com/download/)
 ```
 #Enter Linux Terminal
@@ -270,13 +270,21 @@ $ blastx -query extracted.fa -out MGEblastout.txt -db ~/~/MGE_BMG_aod/Ublastx_st
 4. into R and reannontate blastouput  
 using "mge_ARGoapquantification.R"
 
-whatever DB you want to analyze, just use this method you can get the same quantification method as ARGs-OAP
+whatever DB you want to analyze, just use this method and you can get the same quantification method as ARGs-OAP
 
-### [ARGs-OAPv3.2](https://github.com/xinehc/args_oap)
-So far I don't read any paper that used the v3 DB and pipeline except the ARGs-OAP developer, This section is just in case (2023/05/21)
+### [ARGs-OAPv3.2](https://github.com/xinehc/args_oap)  
+Basically, the new version of ARGs-OAP is easier to use and more flexible. Now We Don't need to construct our pipeline for other DB, there is a protocol to use ARGs-OAP v3.2 pipeline to analyze other DB. [ARGs-OAPv3.2 manual](https://github.com/xinehc/args_oap)  
+You should notic the quantification method of ARGs-OAPv3.0 is different to ARGs-OAP v2.2 in 2 asepect.
+1. They remove the **regulator gene(eg.cpxR)** in short reads quantification pipeline(aka. ARGs-OAP piplne), but they still kept it in full database.    
+
+   *That means now we need to use 2 different DB(SARG v3.2.1-S and SARG v3.2.1-F). 1 is for the short reads analysis pipeline (SARG v3.2.1-S) the other is for your Assembly Based analysis usage (SARG v3.2.1-F)*
+
+2. There has a multiple group system in the quantification equation.  
+Check out the paper.    
+[Yin, X., Zheng, X., Li, L., Zhang, A. N., Jiang, X. T., & Zhang, T. (2022). ARGs-OAP v3. 0: Antibiotic-resistance gene database curation and analysis pipeline optimization. Engineering.](https://www.sciencedirect.com/science/article/pii/S2095809922008062) 
 #### Installation
 ```
-$  conda create -n args_oap -c bioconda -c conda-forge args_oap
+$ conda create -n args_oap -c bioconda -c conda-forge args_oap
 $ conda activate args_oap
 ```
 #### ARGs analysis
@@ -285,12 +293,12 @@ $ conda activate args_oap
 $ args_oap stage_one -i /media/sf_sf/cleanread_new/ -o ~/args_oap_v3_out/ARG/stage_one_output -f fq -t 18
 
 
-# Stage two (e_value: 1e-7, identity: 80, aa_length,25)
+# Stage two (BLASTX: id>80% , E-value<1e-7,Query Coverage>75%, aa length>25)
 $ args_oap stage_two -i ~/args_oap_v3_out/ARG/stage_one_output -o ~/args_oap_v3_out/ARG/stage_two_output -t 18
 ```
 
 #### MGEs (Mobile Genetic Elements) analysis
-I haven't tried to use v3 to analyze MGEs and BMGs, so this part is from our 先輩 睿紘's pipeline [Github](https://github.com/yenjh3910/bioinformatic_pipeline#readme)  
+ this part is from our 先輩 睿紘's pipeline [Github](https://github.com/yenjh3910/bioinformatic_pipeline#readme)  
 (shout out to 睿紘, thanks for you teaching me everything)  
 
 Database: https://github.com/KatariinaParnanen/MobileGeneticElementDatabase
@@ -442,7 +450,7 @@ $ prodigal -i <final_contigs> -o <prodigal_out> -a <prodigal_out.protein> -d <pr
 #combine script(assembly and gene prediction)
 $ perl -w megahit_prodigal.pl
 ```
-**Some papers combine CD-HIT with Prodigal output, but some papers don't do this , so you may need CD-HIT**
+**Some papers use CD-HIT after ORFs prediction to remove redundant ORFs, but some papers don't do this , so you may need CD-HIT**
 
 ## Contigs ARG gene predction(ARC)
 ### [Diamond](https://github.com/bbuchfink/diamond)
@@ -452,6 +460,7 @@ Installation & makeDB
 ```
 $ conda activate
 $ conda install -c conda-forge diamond
+#You should very notice the version you installed of diamond
 
 # Make database(for blastx, make .dmnd from aa sequence)
 $ conda activate
@@ -486,10 +495,15 @@ like MGE_diamond_hitted_reannonate.R
 
 
 ## Taxanomic Assignment of ARCs
-This section have 2 methods **A**. NR+MEGAN **B**. kraken2   
+This section have 2 methods   
+**A**. NR+MEGAN  
+**B**. kraken2   
+
+*NR+MEGAN is a more traditional approach, but this method will have lots of contigs that can't be classified.Kraken2 is a k-mer based method, most contigs can be classified through this method.
 ### NR+MEGAN
-1. blast ARC ORF with NR DB
-2. Use Megan to classified NR blast output
+1. blast the ORFs of all ARCs with NR_DB
+   This was Done in 
+2. Use MEGAN to classified NR blast output
 ```
 #import DAA file and Meganize
 1.click File-Meganize.DAA file
@@ -519,18 +533,27 @@ k141_517147_2 [length=151, matches=25]
 5. save output
 ```
 #### Usage
-after your save the output
+after your save the MEGAN output, use custom scripts doing voting method
 ```
-#Use custom scripts doing voting method
-5. execute MEGAN_out_procress.pl
+$ perl -w MEGAN_out_procress.pl
 ```
 ### kakrn2
-This method is quite simple, just gave kraken2 your ARC sequence fasta
+This method is quite simple, just give kraken2 your ARC sequence fasta file
+```
+$ conda activate
+$ kraken2 --db /media/sf_sf/DB/kraken2/DB/bacteria_DB/ ~/location_co_assembly/SARG3.2/blastx_sm70_cover70_e10/ARC/T5-WARC.fa --threads 18 --use-names --output T5-WARC_kraken2.txt --report T5-WARC_kraken2.report
+```
+or use a perl script to do it all
+```
+```
+use an R script to combine all output and link the output taxonomic assignment with higher taxonomic level
+```
+ARC_kraken2_classification_combine_taxa.R
 ```
 
-```
 
-## ORF coverage and contig coverage caculation
+## ORF coverage /contig coverage caculation
+#### ORF Coverage caculation
 1.  Extract ARC-like ORF list(custom perl script)
 2.  Extract ARC-like ORFs sequence(seqkit)
 3.  Mappinng reads to ARC sequence to caculate coverage(Botwie& BBmap)
