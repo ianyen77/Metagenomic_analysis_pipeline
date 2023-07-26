@@ -1,5 +1,5 @@
 # A metagenomic survey of antibiotic resistome along a drinking water distribution system
-Complete Metagenomic analysis piepline for ARGs survey
+Complete Metagenomic analysis piepline for ARGs survey in drinking water
 
 ## Table of Contents
 1. [Environment Setup]()    
@@ -16,11 +16,9 @@ Complete Metagenomic analysis piepline for ARGs survey
    - [ORF/Contigs coverage caculation]()
    - [MetaWRAP]()
    - [Plasflow]()
-   - []
 5. [Binning Based analysis]()
    - [Reads normaliztion]()
    - [Co-assembly]()
-   - [Plasflow]()
    - [Binning/Bin_refinement]()
    - [Bin classification]()
    - [Gene prediction of Bin]()
@@ -490,7 +488,6 @@ perl -w MGE_VF_blast.pl
 # Enter R 
 # UseR to reannonate gene name
 like MGE_diamond_hitted_reannonate.R
-
 ```
 
 
@@ -553,16 +550,38 @@ ARC_kraken2_classification_combine_taxa.R
 
 
 ## ORF coverage /contig coverage caculation
-#### ORF Coverage caculation
-1.  Extract ARC-like ORF list(custom perl script)
+#### ORF Coverage caculation 
+1.  Extract ARC-like ORFs list(custom perl script)
 2.  Extract ARC-like ORFs sequence(seqkit)
+3.  Mappinng reads to ARC-like ORFs sequence to caculate coverage(Botwie& BBmap)
+4.  Caclute ORF coverager per GB    
+   
+**if you do it manually, this will be a quite complicated procedure. but there has an all-in-one script.**
+```
+$ conda activate
+$ perl -w ARG-ORF_coverage_SARG3.2.pl
+```
+#### Contigs Coverage caculation  
+I personally thought the contigs coverage calculation is the same as the ORFs coverage calculation
+1.  Extract ARC list(custom perl script)
+2.  Extract ARC sequence(seqkit)
 3.  Mappinng reads to ARC sequence to caculate coverage(Botwie& BBmap)
 4.  Caclute ORF coverager per GB    
    
 **if you do it manually, this will be a quite complicated procedure. but there has an all-in-one script.**
 ```
 $ conda activate
-#This script should be renewed to adapt kraken2 classification
-$perl -w ARG-ORF_coverage_SARG3.2.pl
+#This script needs to be renewed for adapting the kraken2 classification of ARCs
+$ perl -w ARC-coverage_SARG3.2.pl
 ```
+I personally recommand you doing Assembly-Based analysis in this order.
+1. Get ARG-lik ORFs and ARCs.
+2. Calculate the Coverage of ARC-like ORFs and ARCs.Meanwhile, connect the ARG gene name with ARG subtype names.
+3. Connect the ARCs taxonomic assigment with 2. output df.    
+if you want to reproduce my plots, you should have a data frame like this
+
+## Binning
+
+
+
 
