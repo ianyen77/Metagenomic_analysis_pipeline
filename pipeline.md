@@ -475,16 +475,20 @@ diamond blastx -d /media/sf_sf/DB/Diamond/DB/SARG2.2_DB.dmnd -q <orf.nucl> -p 16
 ```
 Combine Usage  
 1. Annonation of ARG like-ORF(all contig)   
-2. Extract ARC fasta
+2. Extract ARC fasta(Seqkit)
 3. Predict ARC ORF (ARC)
 4. Reblast ARC ORFs with SARG
 5. Blast ARC ORFs to nr(for taxanomic Asseignment of ARCs)
 ```
-perl -w ARGprediction_ARCextract.pl
+#make sure you have installed all dependencies in conda base env (seqkit,prodigal,diamond)
+$ conda activate
+$ perl -w ARGprediction_ARCextract.pl
 ```
 6. blast ARC with MGEs/VF/BMG DB to find co-occurance
 ```
-perl -w MGE_VF_blast.pl
+$ conda activate
+$ perl -w MGE_VF_blast.pl
+
 # Enter R 
 # UseR to reannonate gene name
 like MGE_diamond_hitted_reannonate.R
@@ -558,6 +562,9 @@ ARC_kraken2_classification_combine_taxa.R
    
 **if you do it manually, this will be a quite complicated procedure. but there has an all-in-one script.**
 ```
+#make sure you install all dependecies in conda base env(Bowtie2, BBmap, seqkit)
+#Bowtie2 and seqkit can through Bioconda to get it 
+#Personally I got BBmap from here(https://sourceforge.net/projects/bbmap/) and just unzip 
 $ conda activate
 $ perl -w ARG-ORF_coverage_SARG3.2.pl
 ```
@@ -579,8 +586,70 @@ I personally recommand you doing Assembly-Based analysis in this order.
 2. Calculate the Coverage of ARC-like ORFs and ARCs.Meanwhile, connect the ARG gene name with ARG subtype names.
 3. Connect the ARCs taxonomic assigment with 2. output df.    
 if you want to reproduce my plots, you should have a data frame like this
+## Metacompare
+## Plasflow
+## Binning Based analysis
+## Reads normalization
+Because of the PC limitation, we need to normalize our reads first to reduce the computer loading
+```
+#same, make sure you have installed BBmap before you use this script
+$ perl -w bbnorm.pl
+```
+## Co-Assembly
+Pooling all sample reads  together to co-assembly
+```
+#Co-assembly
+$ conda activate
+$ megahit -t 16 -m 0.95 -1 nT1-W-1_1.fq,nT1-W-2_1.fq,nT1-W-3_1.fq,nT2-W-1_1.fq,nT2-W-2_1.fq,nT2-W-3_1.fq,nT3-W-1_1.fq,nT3-W-2_1.fq,nT3-W-3_1.fq,nT4-W-1_1.fq,nT4-W-2_1.fq,nT4-W-3_1.fq,nT5-W-1_1.fq,nT5-W-2_1.fq,nT5-W-3_1.fq -2 nT1-W-1_2.fq,nT1-W-2_2.fq,nT1-W-3_2.fq,nT2-W-1_2.fq,nT2-W-2_2.fq,nT2-W-3_2.fq,nT3-W-1_2.fq,nT3-W-2_2.fq,nT3-W-3_2.fq,nT4-W-1_2.fq,nT4-W-2_2.fq,nT4-W-3_2.fq,nT5-W-1_2.fq,nT5-W-2_2.fq,nT5-W-3_2.fq --min-contig-len 500 -o $output_directory
 
-## Binning
+#Assembly quality assement
+$ conda activate
+#Enter quast directory
+$ ./quast.py ~/all_sample_co_assembly/final.contigs.fa -o ~/all_sample_co_assembly/al1_sample_coassembly_contig/quast
+```
+
+## Binning/Bin_refinement
+
+In Binning process we use [MetaWRAP](), but there have some problems that will cause env conflict, so we need to add another user(add an independent user to install Metawrap)
+
+### MetaWRAP Installation
+```
+#add user called metawrap
+$ sudo adduser --home /home/metrawrap metawrap
+#adding user to let new user using the D:/ file
+$ sudo usermod --append --groups vboxsf metawrap
+
+#Install conda 
+metawrap@....$ wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
+#Check the intergrity of the download packages
+metawrap@....$ sha256sum Anaconda3-2023.03-1-Linux-x86_64.sh
+
+metawrap@....$ bash Anaconda3-2023.03-1-Linux-x86_64.sh
+metawrap@....$ source ~/.bashrc
+metawrap@....$ conda info
+
+#Adding channels 
+metawrap@....$ conda config --add channels bioconda
+metawrap@....$ conda config --add channels conda-forge
+metawrap@....$ conda config -- show channels
+
+#Install Mambaforge
+#That's the reason why i reconmand you don't install in same user, because mamba will take your original conda command
+
+#Download mambaforge
+metawrap@....$ wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
+
+#Install mambaforge
+metawrap@....$ bash Mambaforge-Linux-x86_64.sh
+
+close terminal and open a new terminal
+
+#Install Metawrap
+metawrap@....$ mamba create -y --name metawrap-env --channel ursky metawrap-mg=1.3.2
+metawrap@....$ conda install -y blas=2.5=mkl
+
+```
+
 
 
 
