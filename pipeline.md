@@ -649,6 +649,40 @@ metawrap@....$ mamba create -y --name metawrap-env --channel ursky metawrap-mg=1
 metawrap@....$ conda install -y blas=2.5=mkl
 
 ```
+database config
+```
+#CheckM DB------------------------------------
+
+metawrap@....$ mkdir /media/sf_sf/DB/Metawrap/CheckM_DB
+# Now manually download the database:
+metawrap@....$ cd /media/sf_sf/DB/Metawrap/CheckM_DB
+metawrap@....$ wget https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz
+metawrap@....$ tar -xvf *.tar.gz
+metawrap@....$ rm *.gz
+metawrap@....$ cd
+
+# Tell CheckM where to find this data before 
+metawrap@....$ checkm data setRoot 
+# On newer versions of CheckM, you would run:
+metawrap@....$ checkm data setRoot /media/sf_sf/DB/Metawrap/CheckM_DB
+
+#NCBI_nt&NCBI_tax if for metawrap blobgyplot
+#NCBI_nt--------------------------
+metawrap@....$ mkdir /media/sf_sf/DB/Metawrap/NCBI_nt
+metawrap@....$ cd /media/sf_sf/DB/Metawrap/NCBI_nt
+wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.*.tar.gz"
+for a in nt.*.tar.gz; do tar xzf $a; done
+
+#config-metawrap file
+BLASTDB=/media/sf_sf/DB/Metawrap/NCBI_nt
+
+#NCBI_tax----------------------------
+metawrap@....$ mkdir /media/sf_sf/DB/Metawrap/NCBI_tax
+metawrap@....$ cd /media/sf_sf/DB/Metawrap/NCBI_tax
+
+```
+
+
 
 
 
