@@ -649,7 +649,7 @@ metawrap@....$ mamba create -y --name metawrap-env --channel ursky metawrap-mg=1
 metawrap@....$ conda install -y blas=2.5=mkl
 
 ```
-database config
+#### DB configuration
 ```
 #CheckM DB------------------------------------
 
@@ -679,8 +679,13 @@ BLASTDB=/media/sf_sf/DB/Metawrap/NCBI_nt
 #NCBI_tax----------------------------
 metawrap@....$ mkdir /media/sf_sf/DB/Metawrap/NCBI_tax
 metawrap@....$ cd /media/sf_sf/DB/Metawrap/NCBI_tax
-
+metawrap@....$ wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+metawrap@....$ tar -xzvf taxdump.tar.gz.
+#this gz file is always a hava some problem to unzip,you can download file manual in http
+https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
 ```
+#### Usage
+
 
 
 
