@@ -14,20 +14,17 @@ Complete Metagenomic analysis piepline for ARGs survey in drinking water
    - [Contigs ARG gene predction(ARC)]()
    - [Taxanomic assignment of Contigs]()
    - [ORF/Contigs coverage caculation]()
-   - [MetaWRAP]()
+   - [Metacompare]()
    - [Plasflow]()
 5. [Binning Based analysis]()
    - [Reads normaliztion]()
    - [Co-assembly]()
-   - [Binning/Bin_refinement]()
+   - [Binning/Bin_refinement/Gene prediction]()
    - [Bin classification]()
-   - [Gene prediction of Bin]()
    - [MetaCHIP]()
 6. [Others]()
    - [SourceTracker2]()
    - [Assement of Bacterial community assembly(NST)]()
-
-   
 
 ## Environment Setup
 ### [Anaconda installation](https://www.anaconda.com/download/)
@@ -546,6 +543,8 @@ $ kraken2 --db /media/sf_sf/DB/kraken2/DB/bacteria_DB/ ~/location_co_assembly/SA
 ```
 or use a perl script to do it all
 ```
+# I have't written this script sorry 
+#but this is a simple loop script
 ```
 use an R script to combine all output and link the output taxonomic assignment with higher taxonomic level
 ```
@@ -587,8 +586,27 @@ I personally recommand you doing Assembly-Based analysis in this order.
 3. Connect the ARCs taxonomic assigment with 2. output df.    
 if you want to reproduce my plots, you should have a data frame like this
 ## Metacompare
+### Installation
+```
+# Installation
+$ sudo apt-get update
+$ sudo apt-get install python3-biopython
+$ sudo apt-get install python3-pandas
+$ git clone https://github.com/minoh0201/MetaCompare
+$ cd MetaCompare
+$ mkdir BlastDB
+$ cd BlastDB
+$ wget http://bench.cs.vt.edu/ftp/data/metacomp/BlastDB.tar.gz
+$ tar -zxvf BlastDB.tar.gz
+$ cd ../
+$ ./metacmp.py
+```
+### Usage
+```
+$ perl -w metacompare.pl
+```
 ## Plasflow
-## Binning Based analysis
+# Binning Based analysis
 ## Reads normalization
 Because of the PC limitation, we need to normalize our reads first to reduce the computer loading
 ```
@@ -685,6 +703,29 @@ metawrap@....$ tar -xzvf taxdump.tar.gz.
 https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
 ```
 #### Usage
+```
+# Bin with three different algorithms
+metawrap@....$ conda activate metawrap-env
+metawrap@....$ metawrap binning -o metawrap_out/intinal_binn -t 16 -a ~/all_sample_co_assembly/final.contigs.fa --metabat2 --maxbin2 --concoct /media/sf_sf/cleanread_new/*.fastq
+
+# Bin refinement(remove redundant bins and keep bin which has completeness>50%, contamination<10%)
+metawrap@....$ conda activate metawrap-env
+metawrap@....$ metawrap bin_refinement -o ~/metawrap_run/bin_refinement -t 16 -A ~/metawrap_out/intinal_binning/metabat2_bins -B ~/metawrap_out/intinal_binning/maxbin2_bins -C ~/metawrap_out/intinal_binning/concoct_bins -c 50 -x 10 -m 96
+
+ # caculate coverage of each high Q bin in each sample
+ metawrap@....$ conda activate metawrap-env
+ metawrap@....$  metawrap quant_bins -b ~/metawrap_out/bin_refinement/metawrap_50_10_bins -o ~/metawrap_out/bin_quant -a ~/all_sample_co_assembly/final.contigs.fa /media/sf_sf/cleanread_new/*.fastq -t 16
+
+ #Gene prediction(This step needs to be done in the original user, make sure the original user(tungs-lab) has permission to read and write the metawrap output file(especially bins file). if don't, you can try to copy the bin file to the original user directory )
+ 
+ #reopen a terminal, and you will back to tungs-lab
+ $ conda activate
+
+ $perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
+```
+
+
+
 
 
 
