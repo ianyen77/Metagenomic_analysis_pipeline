@@ -735,7 +735,17 @@ $ conda activate
 $perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
 ```
 ## Bin classification([GTDB-tk]())
-
+**Installation**
+```
+#Install 
+conda create -n gtdbtk-2.2.4 -c conda-forge -c bioconda gtdbtk=2.2.4
+#config database
+download-db.sh
+```
+**Usage**
+```
+gtdbtk classify_wf --genome_dir ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins -x fa --out_dir ~/all_sample_co_assembly/bins_gtdbtk_mash --cpus 14 --mash_db ~/mash_db/mash
+```
 
 
 
