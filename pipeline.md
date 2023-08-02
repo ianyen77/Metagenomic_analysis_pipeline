@@ -2,12 +2,12 @@
 Complete Metagenomic analysis piepline for ARGs survey in drinking water
 
 ## Table of Contents
-1. [Environment Setup]()    
-   - [Anaconda & Bioconda Installation]()
-2. [Reads Quality Control]()
+1. [Environment Setup](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#environment-setup)    
+   - [Anaconda & Bioconda Installation](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#anaconda-installation)
+2. [Reads Quality Control](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#reads-quality-control)
 3. [Reads Based analysis]()
+   - [Taxanomic Profile](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#taxanomic-profile)
    - [ARGs/MGEs/BRGs Profile]()
-   - [Taxanomic Profile]()
    - [Functional Profile]()
 4. [Assembly Based analysis]()
    - [Reads Assembly / Contigs QC/ ORFs prediction]()
@@ -26,8 +26,8 @@ Complete Metagenomic analysis piepline for ARGs survey in drinking water
    - [SourceTracker2]()
    - [Assement of Bacterial community assembly(NST)]()
 
-## Environment Setup
-### [Anaconda installation](https://www.anaconda.com/download/)
+# Environment Setup
+## [Anaconda installation](https://www.anaconda.com/download/)
 ```
 #Enter Linux Terminal
 $ sudo apt-get update
@@ -46,7 +46,7 @@ $ source ~/.bashrc
 $ conda info
 $ cd
 ```
-### [Bioconda Installation](https://bioconda.github.io/)
+## [Bioconda Installation](https://bioconda.github.io/)
 ```
 $ conda config --add channels defaults
 $ conda config --add channels bioconda
@@ -57,7 +57,7 @@ $ conda config --show channels
 ```
 
 
-## Reads Quality Control
+# Reads Quality Control
 ### [Fastp](https://github.com/OpenGene/fastp#install-with-bioconda)
 Tirmming low quality reads
 
@@ -84,7 +84,7 @@ $ conda activate
 $ fastqc
 ```
 
-
+# Reads Based analysis
 ## Taxanomic Profile  
 I highly recommend do not use Kraken individually, combining Kraken output with Bracken for more accurate abundance estimation
 
