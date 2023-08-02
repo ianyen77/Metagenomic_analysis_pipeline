@@ -734,18 +734,26 @@ $ conda activate
 
 $perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
 ```
-## Bin classification([GTDB-tk]())
+## Bin classification([GTDB-tk](https://ecogenomics.github.io/GTDBTk/installing/bioconda.html))
+
 **Installation**
 ```
 #Install 
-conda create -n gtdbtk-2.2.4 -c conda-forge -c bioconda gtdbtk=2.2.4
+$ conda create -n gtdbtk-2.2.4 -c conda-forge -c bioconda gtdbtk=2.2.4
 #config database
-download-db.sh
+#1.automatically
+$ download-db.sh
+#2.manual
+#Download GTDB-tk refernce DB(https://ecogenomics.github.io/GTDBTk/installing/index.html)
+# config DB manually
+$ conda env config vars set GTDBTK_DATA_PATH="/home/tungs-lab/anaconda3/envs/gtdbtk-2.2.4/share/gtdbtk-2.2.4/db"
 ```
 **Usage**
 ```
-gtdbtk classify_wf --genome_dir ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins -x fa --out_dir ~/all_sample_co_assembly/bins_gtdbtk_mash --cpus 14 --mash_db ~/mash_db/mash
+gtdbtk classify_wf --genome_dir ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins -x fa --out_dir ~/all_sample_co_assembly/bins_gtdbtk --cpus 16 --skip-ani
 ```
+### MetaCHIP
+
 
 
 
