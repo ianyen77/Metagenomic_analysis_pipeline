@@ -627,7 +627,7 @@ $ conda activate
 $ ./quast.py ~/all_sample_co_assembly/final.contigs.fa -o ~/all_sample_co_assembly/al1_sample_coassembly_contig/quast
 ```
 
-## Binning/Bin_refinement
+## Binning/Bin_refinement/Genepredictions
 
 In Binning process we use [MetaWRAP](https://github.com/bxlab/metaWRAP), but there have some problems that will cause env conflict, so we need to add another user(add an independent user to install Metawrap)
 
@@ -734,7 +734,7 @@ $ conda activate
 
 $perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
 ```
-
+## Bin classification([GTDB-tk]())
 
 
 
