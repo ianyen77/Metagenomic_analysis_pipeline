@@ -5,20 +5,20 @@ Complete Metagenomic analysis piepline for ARGs survey in drinking water
 1. [Environment Setup](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#environment-setup)    
    - [Anaconda & Bioconda Installation](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#anaconda-installation)
 2. [Reads Quality Control](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#reads-quality-control)
-3. [Reads Based analysis]()
+3. [Reads Based analysis](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#reads-based-analysis)
    - [Taxanomic Profile](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#taxanomic-profile)
-   - [ARGs/MGEs/BRGs Profile]()
-   - [Functional Profile]()
+   - [ARGs/MGEs/BRGs Profile](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#argsmgesbrgs-profile)
+   - [Functional Profile](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#functional-profile)
 4. [Assembly Based analysis]()
-   - [Reads Assembly / Contigs QC/ ORFs prediction]()
-   - [Contigs ARG gene predction(ARC)]()
-   - [Taxanomic assignment of Contigs]()
-   - [ORF/Contigs coverage caculation]()
-   - [Metacompare]()
+   - [Reads Assembly / Contigs QC/ ORFs prediction](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#reads-assembly--contigs-qc-orfs-prediction)
+   - [Contigs ARG gene predction(ARC)](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#contigs-arg-gene-predctionarc)
+   - [Taxanomic assignment of Contigs](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#taxanomic-assignment-of-arcs)
+   - [ORF/Contigs coverage caculation](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#orf-coverage-contig-coverage-caculation)
+   - [Metacompare](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#metacompare)
    - [Plasflow]()
-5. [Binning Based analysis]()
-   - [Reads normaliztion]()
-   - [Co-assembly]()
+5. [Binning Based analysis](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#binning-based-analysis)
+   - [Reads normaliztion](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#reads-normalization)
+   - [Co-assembly](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#co-assembly)
    - [Binning/Bin_refinement/Gene prediction]()
    - [Bin classification]()
    - [MetaCHIP]()
@@ -400,24 +400,24 @@ $ ~/shell_script/humann3.sh
 $ ~/shell_script/humann3_post_processing.sh
 ```
 # 以上未寫
-
+# Assembly Based analysis
 ## Reads Assembly / Contigs QC/ ORFs prediction
 
 ### Reads Assembly ([Megahit](https://github.com/voutcn/megahit))
-Installation
+**Installation**
 ```
 $ conda activate
 $ conda install -c bioconda megahit
 #Test 
 $ megahit
 ```
-Usage  
+**Usage**
 indivisual assembly or co-assembly is up to you
 ```
 $ conda activate
 $ megahit -t 16 -m 0.95 -1 <file_1.fq> -2 <file_2.fq> --min-contig-len 500 -o <file.final.contigs>
 ```
-## Contigs QC ([Quast](https://github.com/ablab/quast))
+### Contigs QC ([Quast](https://github.com/ablab/quast))
 Installation
 ```
 $ conda create -n quast
@@ -429,15 +429,15 @@ Usage
 $ conda activate quast
 $ perl -w quast.pl
 ```
-## ORFs prediction ([Prodigal]((https://github.com/hyattpd/Prodigal)))
-Installation
+### ORFs prediction ([Prodigal]((https://github.com/hyattpd/Prodigal)))
+**Installation**
 ```
 $ conda activate
 $ conda install -c bioconda prodigal
 $ prodigal 
 ```
 
-Usage
+**Usage**
 ```
 #Single use
 $ prodigal -i <final_contigs> -o <prodigal_out> -a <prodigal_out.protein> -d <prodigal_out.nucl> -p meta
@@ -586,6 +586,7 @@ I personally recommand you doing Assembly-Based analysis in this order.
 3. Connect the ARCs taxonomic assigment with 2. output df.    
 if you want to reproduce my plots, you should have a data frame like this
 ## Metacompare
+Risk assement of ARGs
 ### Installation
 ```
 # Installation
@@ -628,7 +629,7 @@ $ ./quast.py ~/all_sample_co_assembly/final.contigs.fa -o ~/all_sample_co_assemb
 
 ## Binning/Bin_refinement
 
-In Binning process we use [MetaWRAP](), but there have some problems that will cause env conflict, so we need to add another user(add an independent user to install Metawrap)
+In Binning process we use [MetaWRAP](https://github.com/bxlab/metaWRAP), but there have some problems that will cause env conflict, so we need to add another user(add an independent user to install Metawrap)
 
 ### MetaWRAP Installation
 ```
@@ -667,7 +668,7 @@ metawrap@....$ mamba create -y --name metawrap-env --channel ursky metawrap-mg=1
 metawrap@....$ conda install -y blas=2.5=mkl
 
 ```
-#### DB configuration
+#### Metawrap DB configuration
 ```
 #CheckM DB------------------------------------
 
@@ -691,7 +692,10 @@ metawrap@....$ cd /media/sf_sf/DB/Metawrap/NCBI_nt
 wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.*.tar.gz"
 for a in nt.*.tar.gz; do tar xzf $a; done
 
-#config-metawrap file
+#edit config-metawrap file
+metawrap@....$ which config-metawrap
+metawrap@....$ vim /home/metawrap/mambaforge/envs/metawrap-env/bin/config-metawrap
+#enter config-metawrap file and chage BLASTDB
 BLASTDB=/media/sf_sf/DB/Metawrap/NCBI_nt
 
 #NCBI_tax----------------------------
@@ -701,27 +705,34 @@ metawrap@....$ wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
 metawrap@....$ tar -xzvf taxdump.tar.gz.
 #this gz file is always a hava some problem to unzip,you can download file manual in http
 https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+
+#edit config-metawrap file
+metawrap@....$ vim /home/metawrap/mambaforge/envs/metawrap-env/bin/config-metawrap
+#enter config-metawrap file and chage TAXDUMP
+TAXDUMP=/media/sf_sf/DB/Metawrap/NCBI_tax
 ```
 #### Usage
 ```
-# Bin with three different algorithms
+# Binning with three different algorithms------------------
 metawrap@....$ conda activate metawrap-env
 metawrap@....$ metawrap binning -o metawrap_out/intinal_binn -t 16 -a ~/all_sample_co_assembly/final.contigs.fa --metabat2 --maxbin2 --concoct /media/sf_sf/cleanread_new/*.fastq
 
-# Bin refinement(remove redundant bins and keep bin which has completeness>50%, contamination<10%)
+# Bin refinement---------------------------
+#(remove redundant bins and keep bin which has completeness>50%, contamination<10%)
 metawrap@....$ conda activate metawrap-env
 metawrap@....$ metawrap bin_refinement -o ~/metawrap_run/bin_refinement -t 16 -A ~/metawrap_out/intinal_binning/metabat2_bins -B ~/metawrap_out/intinal_binning/maxbin2_bins -C ~/metawrap_out/intinal_binning/concoct_bins -c 50 -x 10 -m 96
 
- # caculate coverage of each high Q bin in each sample
- metawrap@....$ conda activate metawrap-env
- metawrap@....$  metawrap quant_bins -b ~/metawrap_out/bin_refinement/metawrap_50_10_bins -o ~/metawrap_out/bin_quant -a ~/all_sample_co_assembly/final.contigs.fa /media/sf_sf/cleanread_new/*.fastq -t 16
+# caculate coverage of each high Q bin in each sample----------------------------
+metawrap@....$ conda activate metawrap-env
+metawrap@....$  metawrap quant_bins -b ~/metawrap_out/bin_refinement/metawrap_50_10_bins -o ~/metawrap_out/bin_quant -a ~/all_sample_co_assembly/final.contigs.fa /media/sf_sf/cleanread_new/*.fastq -t 16
 
- #Gene prediction(This step needs to be done in the original user, make sure the original user(tungs-lab) has permission to read and write the metawrap output file(especially bins file). if don't, you can try to copy the bin file to the original user directory )
- 
- #reopen a terminal, and you will back to tungs-lab
- $ conda activate
+#Gene prediction-----------------------------------------
+(This step needs to be done in the original user, make sure the original user(tungs-lab) has permission to read and write the metawrap output file(especially bins file). if don't, you can try to copy the bin file to the original user directory )
 
- $perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
+#reopen a terminal, and you will back to tungs-lab
+$ conda activate
+
+$perl -w bin_prodigal_ARGblast_SARG3.2.pl -i ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/ -p ~/all_sample_co_assembly/SARG3.2/bin_50_10_prodigal/ -o ~/all_sample_co_assembly/SARG3.2/bin_50_10_ARGblast/ -m ~/all_sample_co_assembly/SARG3.2/bin_50_10_MGEblast/ -v ~/all_sample_co_assembly/SARG3.2/bin_50_10_VFblast/ -b ~/all_sample_co_assembly/SARG3.2/bin_50_10_bacmetblast/ ~/all_sample_co_assembly/metawrap_out/bin_refinement/metawrap_50_10_bins/*.fa
 ```
 
 
