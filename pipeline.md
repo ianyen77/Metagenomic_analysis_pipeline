@@ -1,5 +1,5 @@
 # A metagenomic survey of antibiotic resistome along a drinking water distribution system
-Complete Metagenomic analysis piepline for ARGs survey in drinking water
+Complete Metagenomic analysis pipeline for ARGs survey in drinking water
 
 ## Table of Contents
 1. [Environment Setup](https://github.com/ianyen77/Metagenomic_analysis_pipeline/blob/main/pipeline.md#environment-setup)    
