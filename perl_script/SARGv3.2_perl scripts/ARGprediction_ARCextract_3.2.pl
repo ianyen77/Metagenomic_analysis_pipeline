@@ -18,7 +18,7 @@ unless (@ARGV && $opt_b && $opt_o && $opt_i && $opt_a && $opt_c) {
     }
 while (1) {
     print "Check DB and blast parameter\n";
-    print "diamond blastx -d /media/sf_sf/DB/Diamond/DB/v2.1.8_diamond_DB/1.SARG_v3.2_20220917_Full_database.dmnd  -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70\n";
+    print "diamond blastx -d /media/sf_sf/DB/Diamond/v0.9.14_diamond_DB/SARG_v3.2_20220917_Full_database.dmnd  -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70\n";
     print "If the command is right, type yes\n";
     $response = <STDIN>;
     chomp($response);
@@ -57,10 +57,10 @@ for ($x=0; $x<@ARGV; $x++){
 	$ARCorfrediamondout=$ARCorfrediamond.$filename."reblast_SARG.dmnd";
 	$diamondoutnr=$ARCorfnrblast.$filename.".nrblast.daa";
 	#NOTICE PARAMETERS
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/v2.1.8_diamond_DB/1.SARG_v3.2_20220917_Full_database.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $diamondout");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/v0.9.14_diamond_DB/SARG_v3.2_20220917_Full_database.dmnd -q $orf -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $diamondout");
 	system("perl -w $script1 -f $diamondout > $ARClistopt");
 	system("seqkit grep -f $ARClistopt $contig -o $extractseq");
 	system("prodigal -i $extractseq -o $prodigalout -a $prodigalout_p -d $prodigalout_nucl -p meta");
-	system("diamond blastx -d /media/sf_sf/DB/Diamond/v2.1.8_diamond_DB/1.SARG_v3.2_20220917_Full_database.dmnd -q $prodigalout_nucl -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $ARCorfrediamondout");
+	system("diamond blastx -d /media/sf_sf/DB/Diamond/v0.9.14_diamond_DB/SARG_v3.2_20220917_Full_database.dmnd -q $prodigalout_nucl -p 16 --id 70 -p 16 -e 1e-10 -f 6 -k 1 --query-cover 70 -o $ARCorfrediamondout");
 	#system("diamond blastp -d /media/sf_sf/DB/Diamond/DB/nr.dmnd -q $prodigalout_p -p 16 -b 16 -e 1e-5 -f 100 -o $diamondoutnr");
 	}
